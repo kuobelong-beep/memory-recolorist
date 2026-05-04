@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記憶重繪者 · Day 02</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Special+Elite&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;}
+.gw{background:#141414;width:100%;max-width:700px;min-height:100vh;color:#c8c8c8;position:relative;}
+
+/* 開場 */
+#intro{position:fixed;inset:0;background:#0a0a0a;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;}
+.intro-tag{font-size:10px;color:#333;letter-spacing:5px;font-family:'Special Elite',monospace;margin-bottom:50px;}
+.intro-chapter{font-size:11px;color:#444;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;}
+.intro-title{font-size:28px;color:#aaa;letter-spacing:4px;margin-bottom:6px;font-family:'Special Elite',monospace;}
+.intro-sub{font-size:12px;color:#444;letter-spacing:2px;margin-bottom:50px;font-family:'Special Elite',monospace;}
+.intro-divider{width:40px;height:1px;background:#2a2a2a;margin:0 auto 40px;}
+.intro-body{font-size:13px;color:#555;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;}
+.intro-body em{color:#777;font-style:normal;}
+.start-btn{background:transparent;border:1px solid #333;color:#666;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
+.start-btn:hover{border-color:#666;color:#aaa;}
+.intro-footer{position:absolute;bottom:24px;font-size:9px;color:#2a2a2a;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* 場景：走廊 */
+#game{display:none;}
+.scene{position:relative;width:100%;height:55vh;min-height:340px;background:#141414;overflow:hidden;filter:grayscale(1) contrast(1.15);}
+
+/* 走廊透視 */
+.corridor-bg{position:absolute;inset:0;background:#141414;}
+.ceil{position:absolute;top:0;left:0;right:0;height:55px;background:#111;border-bottom:2px solid #222;}
+.floor{position:absolute;bottom:0;left:0;right:0;height:110px;background:repeating-linear-gradient(90deg,#1a1a1a 0,#1a1a1a 49px,#1e1e1e 49px,#1e1e1e 50px);}
+.wall-left{position:absolute;top:55px;bottom:110px;left:0;width:65px;background:#181818;border-right:2px solid #222;}
+.wall-right{position:absolute;top:55px;bottom:110px;right:0;width:65px;background:#181818;border-left:2px solid #222;}
+.wall-mid{position:absolute;top:55px;bottom:110px;left:65px;right:65px;background:#161616;}
+.wall-top-line{position:absolute;top:55px;left:0;right:0;height:1px;background:#222;}
+.wall-bot-line{position:absolute;bottom:110px;left:0;right:0;height:1px;background:#222;}
+
+/* 走廊燈 */
+.lamp{position:absolute;top:52px;left:50%;transform:translateX(-50%);width:2px;height:30px;background:#2a2a2a;}
+.lamp::after{content:'';position:absolute;top:30px;left:-15px;width:32px;height:2px;background:#252525;}
+
+/* 物件通用 */
+.item{position:absolute;cursor:pointer;transition:filter .2s,transform .15s;}
+.item:hover{filter:brightness(2) drop-shadow(0 0 6px #888);transform:scale(1.06);}
+.item.solved{filter:brightness(.25) saturate(0);}
+.item.solved:hover{filter:brightness(.4);transform:scale(1.03);}
+.ilabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#666;white-space:nowrap;background:rgba(0,0,0,.9);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s;pointer-events:none;}
+.item:hover .ilabel{opacity:1;}
+
+/* 公告欄 */
+#board-item{top:65px;left:80px;width:95px;height:125px;}
+.board{width:95px;height:125px;background:#1c1c1c;border:2px solid #2e2e2e;position:relative;padding:5px;}
+.board-pin{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:7px;height:7px;background:#333;border-radius:50%;}
+.board-header{height:14px;background:#222;border-bottom:1px solid #2a2a2a;margin-bottom:4px;display:flex;align-items:center;padding:0 3px;}
+.board-header span{font-size:6px;color:#444;letter-spacing:1px;}
+.board-paper{background:#222;border:1px solid #2a2a2a;padding:5px;height:88px;position:relative;}
+.board-line{height:1px;background:#2e2e2e;margin-bottom:4px;}
+.board-text{font-size:7px;color:#444;margin-top:5px;line-height:1.7;font-family:'Special Elite',monospace;}
+
+/* 置物櫃 */
+#locker-item{top:65px;right:80px;width:78px;height:135px;}
+.locker{width:78px;height:135px;background:#181818;border:2px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:3px;}
+.lu{background:#1e1e1e;border:1px solid #252525;position:relative;}
+.lu::after{content:'';position:absolute;right:4px;top:50%;transform:translateY(-50%);width:4px;height:4px;border-radius:50%;background:#333;}
+.lu-num{position:absolute;top:3px;left:4px;font-size:6px;color:#333;font-family:'Special Elite',monospace;}
+.lu-note{position:absolute;bottom:4px;left:3px;right:3px;font-size:5px;color:#3a3a3a;font-family:'Special Elite',monospace;line-height:1.4;}
+
+/* 化學實驗室門 */
+#chemlab-item{bottom:115px;left:120px;width:62px;height:112px;}
+.door{width:62px;height:112px;background:#181818;border:2px solid #2a2a2a;border-radius:2px 2px 0 0;position:relative;}
+.door-win{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:34px;height:24px;background:#1c1c1c;border:1px solid #2e2e2e;}
+.door-sign{position:absolute;top:42px;left:50%;transform:translateX(-50%);width:48px;background:#1e1e1e;border:1px solid #2a2a2a;padding:3px;text-align:center;}
+.door-sign-text{font-size:5px;color:#3a3a3a;display:block;line-height:1.6;letter-spacing:.5px;}
+.door-code{font-size:7px;color:#555;letter-spacing:1px;font-family:'Special Elite',monospace;}
+.door-knob{position:absolute;right:4px;top:55%;width:8px;height:8px;background:#252525;border-radius:50%;border:1px solid #333;}
+
+/* 掃把間 */
+#broom-item{bottom:115px;right:120px;width:52px;height:96px;}
+.broom-door{width:52px;height:96px;background:#161616;border:2px solid #252525;border-radius:1px 1px 0 0;position:relative;}
+.broom-sign{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:40px;background:#1c1c1c;border:1px solid #252525;padding:4px 2px;text-align:center;}
+.broom-text{font-size:5px;color:#333;display:block;line-height:1.6;}
+.broom-binary{font-size:7px;color:#444;letter-spacing:.5px;font-family:'Special Elite',monospace;}
+.broom-knob{position:absolute;left:5px;top:50%;width:7px;height:7px;background:#222;border-radius:50%;border:1px solid #2e2e2e;}
+
+.dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.ov.show{display:flex;}
+.modal{background:#181818;border:1px solid #333;border-radius:4px;padding:26px;max-width:420px;width:100%;position:relative;max-height:88vh;overflow-y:auto;}
+.modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #2a2a2a;color:#555;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
+.modal-x:hover{border-color:#555;color:#aaa;}
+.modal-chapter{font-size:9px;color:#444;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.modal h3{font-size:14px;color:#ccc;margin-bottom:14px;padding-right:80px;letter-spacing:.5px;line-height:1.6;}
+.modal-story{font-size:12px;color:#666;line-height:2.2;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #222;}
+.modal-story em{color:#888;font-style:normal;}
+.puzzle-label{font-size:9px;color:#444;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.puzzle-box{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:14px;margin:10px 0;text-align:center;}
+.puzzle-box .eq{font-size:14px;color:#aaa;line-height:2;}
+.binary-display{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:14px;font-family:'Special Elite',monospace;font-size:20px;color:#888;letter-spacing:8px;margin:10px 0;text-align:center;}
+.table-wrap{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:12px;margin:10px 0;}
+.sym-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px;}
+.tcell{font-size:12px;padding:5px 4px;border-radius:2px;font-family:'Special Elite',monospace;text-align:center;}
+.tcell.sym{color:#777;background:#161616;border:1px solid #252525;}
+.tcell.num{color:#aaa;background:#1e1e1e;border:1px solid #2a2a2a;}
+.answer-area{margin-top:16px;padding-top:16px;border-top:1px solid #1e1e1e;}
+.answer-label{font-size:9px;color:#444;margin-bottom:10px;letter-spacing:2px;font-family:'Special Elite',monospace;}
+.answer-row{display:flex;gap:8px;align-items:center;}
+.ans-input{background:#111;border:1px solid #2a2a2a;color:#ccc;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s;}
+.ans-input:focus{border-color:#555;}
+.ans-btn{background:transparent;border:1px solid #333;color:#777;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.ans-btn:hover{border-color:#666;color:#bbb;}
+.ans-fb{font-size:11px;margin-left:6px;}
+.ans-fb.ok{color:#6a9;}.ans-fb.no{color:#a66;}
+.back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #222;color:#444;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
+.back-btn:hover{color:#888;border-color:#444;}
+.solved-notice{font-size:12px;color:#5a8;margin-top:10px;letter-spacing:1px;}
+
+/* 底部 */
+.bui{background:#0e0e0e;padding:22px 26px;border-top:1px solid #1e1e1e;}
+.chapter-tag{font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:10px;}
+.stext{font-size:13px;color:#666;line-height:2.2;margin-bottom:18px;min-height:50px;}
+.stext em{color:#888;font-style:normal;}
+.prow{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.slots{display:flex;gap:8px;}
+.slot{width:44px;height:44px;border:1px solid #2a2a2a;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#333;background:#111;font-family:'Special Elite',monospace;transition:all .4s;}
+.slot.filled{border-color:#666;color:#ccc;background:#1e1e1e;}
+.irow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.cinput{background:#111;border:1px solid #2a2a2a;color:#ccc;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;}
+.cinput:focus{border-color:#555;}
+.sbtn{background:transparent;border:1px solid #333;color:#777;padding:10px 22px;font-size:12px;cursor:pointer;border-radius:2px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.sbtn:hover{border-color:#666;color:#bbb;}
+.fb{font-size:11px;color:#444;}
+.fb.ok{color:#6a9;}.fb.no{color:#a66;}
+.unlock-section{display:none;margin-top:22px;padding-top:22px;border-top:1px solid #1e1e1e;}
+.unlock-section.show{display:block;}
+.unlock-story{font-size:13px;color:#666;line-height:2.4;margin-bottom:20px;}
+.unlock-story em{color:#888;font-style:normal;}
+.unlock-next{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:16px 20px;}
+.unlock-next p{font-size:10px;color:#444;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;}
+.unlock-link{font-size:13px;color:#7a9aaa;font-family:'Special Elite',monospace;word-break:break-all;cursor:pointer;transition:color .2s;}
+.unlock-link:hover{color:#aaccdd;}
+</style>
+</head>
+<body>
+
+<!-- 開場 -->
+<div id="intro">
+  <div class="intro-tag">MEMORY RECOLORIST</div>
+  <div class="intro-chapter">第二章</div>
+  <div class="intro-title">回聲走廊</div>
+  <div class="intro-sub">THE ECHOING CORRIDOR</div>
+  <div class="intro-divider"></div>
+  <div class="intro-body">
+    走廊沒有盡頭。<br><br>
+    或者說，有——只是你還沒走到。置物櫃、公告欄、緊閉的門，每一樣東西都像是見過的，<em>又像是從來沒有見過的。</em><br><br>
+    有人在你來之前，留下了什麼。你能感覺到。
+  </div>
+  <button class="start-btn" onclick="startGame()">繼續走</button>
+  <div class="intro-footer">DAY 02 of 05 · 走廊</div>
+</div>
+
+<!-- 遊戲 -->
+<div class="gw" id="game">
+  <div class="scene">
+    <div class="corridor-bg"></div>
+    <div class="ceil"></div>
+    <div class="wall-left"></div>
+    <div class="wall-right"></div>
+    <div class="wall-mid"></div>
+    <div class="wall-top-line"></div>
+    <div class="wall-bot-line"></div>
+    <div class="floor"></div>
+    <div class="lamp"></div>
+    <div class="dayhdr">DAY 02 · CORRIDOR</div>
+
+    <!-- 公告欄 -->
+    <div class="item" id="board-item" onclick="openM('board')">
+      <div class="board">
+        <div class="board-pin"></div>
+        <div class="board-header"><span>化 學 公 告</span></div>
+        <div class="board-paper">
+          <div class="board-line"></div>
+          <div class="board-line"></div>
+          <div class="board-text">SO₃+H₂O<br>→H₂SO₄<br><br>128g=?mol</div>
+        </div>
+      </div>
+      <div class="ilabel">公告欄</div>
+    </div>
+
+    <!-- 置物櫃 -->
+    <div class="item" id="locker-item" onclick="openM('locker')">
+      <div class="locker">
+        <div class="lu"><div class="lu-num">01</div></div>
+        <div class="lu"><div class="lu-num">02</div></div>
+        <div class="lu"><div class="lu-num">03</div><div class="lu-note">P(2,2)=?</div></div>
+        <div class="lu"><div class="lu-num">04</div></div>
+      </div>
+      <div class="ilabel">置物櫃</div>
+    </div>
+
+    <!-- 化學實驗室門 -->
+    <div class="item" id="chemlab-item" onclick="openM('chemlab')">
+      <div class="door">
+        <div class="door-win"></div>
+        <div class="door-sign">
+          <span class="door-sign-text">門禁代號</span>
+          <span class="door-code">✦⌬◈⊕</span>
+        </div>
+        <div class="door-knob"></div>
+      </div>
+      <div class="ilabel">化學實驗室</div>
+    </div>
+
+    <!-- 掃把間 -->
+    <div class="item" id="broom-item" onclick="openM('broom')">
+      <div class="broom-door">
+        <div class="broom-sign">
+          <span class="broom-text">清 潔 室</span>
+          <span class="broom-binary">0000</span>
+        </div>
+        <div class="broom-knob"></div>
+      </div>
+      <div class="ilabel">掃把間</div>
+    </div>
+
+    <div class="ov" id="ov"><div class="modal" id="mc"></div></div>
+  </div>
+
+  <div class="bui">
+    <div class="chapter-tag">CHAPTER 02 · 回聲</div>
+    <div class="stext" id="st">走廊是灰的。燈光昏黃，照不清牆角的陰影。你沿著走廊走，腳步聲在空氣裡迴盪，像是有人跟著你，又像是只有你一個人。</div>
+    <div class="prow">
+      <span style="font-size:9px;color:#333;letter-spacing:2px;font-family:'Special Elite',monospace;">CLUE</span>
+      <div class="slots">
+        <div class="slot" id="s0">?</div>
+        <div class="slot" id="s1">?</div>
+        <div class="slot" id="s2">?</div>
+        <div class="slot" id="s3">?</div>
+      </div>
+    </div>
+    <div class="irow">
+      <input class="cinput" id="ci2" type="text" maxlength="4" placeholder="____"/>
+      <button class="sbtn" onclick="checkFinal()">解鎖記憶</button>
+      <span class="fb" id="fb"></span>
+    </div>
+    <div class="unlock-section" id="unlockSection">
+      <div class="unlock-story" id="unlockStory"></div>
+      <div class="unlock-next">
+        <p>第三章入口</p>
+        <div class="unlock-link" onclick="window.location.href='https://kuobelong-beep.github.io/memory-recolorist/day3.html'">
+          → https://kuobelong-beep.github.io/memory-recolorist/day3.html
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const solved={board:false,locker:false,chemlab:false,broom:false};
+
+const data={
+  board:{
+    chapter:'線索一',
+    title:'公告欄上的題目',
+    story:'公告欄上釘著一張紙，邊角已經微微翹起。\n\n那是一道化學題，筆跡工整，像是老師出的——但老師不會把題目釘在走廊上。\n\n有人特意留下這道題。為什麼，你還不知道。',
+    extra:`<div class="puzzle-box"><div class="eq">SO₃ + H₂O → H₂SO₄<br><br>將 <strong style="color:#ccc">128g</strong> 的 SO₃ 完全溶於水，<br>生成幾莫耳的 H₂SO₄ ？</div></div>
+<div style="font-size:11px;color:#444;margin-top:8px;line-height:1.8;">SO₃ 分子量 = 80 g/mol　答案為整數。</div>`,
+    answer:'4',slots:[1],inputLen:1,placeholder:'_',
+    found:'4。你把數字記下來，繼續往前走。'
+  },
+  locker:{
+    chapter:'線索二',
+    title:'置物櫃的刻字',
+    story:'其中一個置物櫃的鎖上，有人用利器刻了一道算式。\n\n不是塗鴉，刻痕太深，太刻意。像是給某個特定的人看的——像是給你看的。',
+    extra:`<div class="puzzle-box"><div class="eq">P( 2, 2 ) = ?<br><br><span style="font-size:12px;color:#555;">從 2 個相異元素中取 2 個排列，共有幾種？</span></div></div>
+<div style="font-size:11px;color:#444;margin-top:8px;">公式：P(n,r) = n! ÷ (n-r)!　答案為整數。</div>`,
+    answer:'2',slots:[2],inputLen:1,placeholder:'_',
+    found:'2。刻在鎖上的答案，原來是這樣。'
+  },
+  chemlab:{
+    chapter:'線索三',
+    title:'化學實驗室的門禁',
+    story:'化學實驗室的門緊閉著。門上有一組代號，全是奇怪的符號。\n\n旁邊的牆上貼著一張對照表，紙張是新的，墨水還沒有褪色。\n\n有人最近才貼上去的。',
+    extra:`<div class="table-wrap">
+<div style="font-size:9px;color:#444;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">符號對照表</div>
+<div class="sym-grid">
+  <div class="tcell sym">✦</div><div class="tcell num">0</div>
+  <div class="tcell sym">◈</div><div class="tcell num">1</div>
+  <div class="tcell sym">⟡</div><div class="tcell num">2</div>
+  <div class="tcell sym">⌖</div><div class="tcell num">3</div>
+  <div class="tcell sym">⊕</div><div class="tcell num">4</div>
+  <div class="tcell sym">⋈</div><div class="tcell num">5</div>
+  <div class="tcell sym">⌬</div><div class="tcell num">6</div>
+  <div class="tcell sym">⟁</div><div class="tcell num">7</div>
+  <div class="tcell sym">◉</div><div class="tcell num">8</div>
+  <div class="tcell sym">⊛</div><div class="tcell num">9</div>
+</div>
+<div style="font-size:12px;color:#666;margin-top:10px;text-align:center;">門上的代號：<span style="font-size:16px;letter-spacing:4px;color:#aaa;font-family:'Special Elite',monospace;">✦⌬◈⊕</span></div>
+<div style="font-size:11px;color:#444;margin-top:6px;text-align:center;">四個符號中，只取第一個對應的數字。</div>
+</div>`,
+    answer:'0',slots:[0],inputLen:1,placeholder:'_',
+    found:'0。第一個符號。你把它放在最前面。'
+  },
+  broom:{
+    chapter:'線索四',
+    title:'掃把間的記號',
+    story:'掃把間的門上，有人用油漆寫了一串數字。\n\n不是門牌號碼，也不是警告標語。是一串只有 0 和 1 的符號，整齊地排成一列。\n\n你在哪裡見過這種東西。',
+    extra:`<div class="binary-display">0000</div>
+<div style="font-size:11px;color:#444;line-height:2;margin-top:8px;">二進位轉十進位：<br>每一位乘以 2 的對應次方後相加。<br><span style="color:#555;">例：0101 = 0×8 + 1×4 + 0×2 + 1×1 = 5</span></div>`,
+    answer:'0',slots:[3],inputLen:1,placeholder:'_',
+    found:'0。四個零。換算之後，還是零。'
+  }
+};
+
+function startGame(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('game').style.display='block';
+}
+
+function openM(type){
+  const d=data[type];
+  const done=solved[type];
+  const storyHtml=d.story.replace(/\n/g,'<br>');
+  document.getElementById('mc').innerHTML=`
+    <button class="modal-x" onclick="closeX()">← 回到走廊</button>
+    <div class="modal-chapter">${d.chapter}</div>
+    <h3>${d.title}</h3>
+    <div class="modal-story">${storyHtml}</div>
+    <div class="puzzle-label">謎題</div>
+    ${d.extra||''}
+    <div class="answer-area">
+      ${done
+        ?'<div class="solved-notice">✓ 線索已記下</div>'
+        :`<div class="answer-label">輸入答案</div>
+          <div class="answer-row">
+            <input class="ans-input" id="ans" type="text" maxlength="${d.inputLen}" placeholder="${d.placeholder}" style="width:${d.inputLen*38+28}px"/>
+            <button class="ans-btn" onclick="checkAns('${type}')">確認</button>
+            <span class="ans-fb" id="ans-fb"></span>
+          </div>`
+      }
+    </div>
+    <button class="back-btn" onclick="closeX()">← 回到走廊</button>
+  `;
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('st').innerHTML=d.story.replace(/\n/g,' ');
+  if(!done)setTimeout(()=>{const el=document.getElementById('ans');if(el)el.focus();},100);
+}
+
+function closeX(){document.getElementById('ov').classList.remove('show');}
+
+function checkAns(type){
+  const d=data[type];
+  const val=document.getElementById('ans').value.trim();
+  const fb=document.getElementById('ans-fb');
+  if(val===d.answer){
+    fb.textContent='✓';
+    fb.className='ans-fb ok';
+    setTimeout(()=>{
+      solved[type]=true;
+      d.slots.forEach((i,idx)=>{
+        const s=document.getElementById('s'+i);
+        s.textContent=d.answer.length>1?d.answer[idx]:d.answer;
+        s.classList.add('filled');
+      });
+      const idMap={board:'board-item',locker:'locker-item',chemlab:'chemlab-item',broom:'broom-item'};
+      document.getElementById(idMap[type]).classList.add('solved');
+      document.getElementById('st').innerHTML=d.found;
+      closeX();
+      const all=['s0','s1','s2','s3'].map(id=>document.getElementById(id).textContent);
+      if(!all.includes('?'))document.getElementById('ci2').value=all.join('');
+    },700);
+  }else{
+    fb.textContent='×';
+    fb.className='ans-fb no';
+    document.getElementById('ans').value='';
+    document.getElementById('ans').focus();
+    setTimeout(()=>{fb.textContent='';fb.className='ans-fb';},2000);
+  }
+}
+
+function checkFinal(){
+  const v=document.getElementById('ci2').value.trim();
+  const fb=document.getElementById('fb');
+  if(v==='0420'){
+    fb.textContent='✓';
+    fb.className='fb ok';
+    document.getElementById('st').innerHTML=`4月20日。<em>你不知道那是誰的生日，但你記得那個數字，像是某個地方的鑰匙。</em>走廊盡頭的燈，亮了一點點。`;
+    document.getElementById('unlockStory').innerHTML=`四個數字排在一起，拼出一個你說不清楚的日期。<br><br>你站在走廊裡，聽著自己的呼吸聲。有什麼東西正在回來——不急，但很確定。<br><br><em>前面還有路。繼續走。</em>`;
+    document.getElementById('unlockSection').classList.add('show');
+  }else{
+    fb.textContent='×';
+    fb.className='fb no';
+    setTimeout(()=>{fb.textContent='';fb.className='fb';},2000);
+  }
+}
+</script>
+</body>
+</html>
