@@ -9,8 +9,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;}
 .gw{background:#141414;width:100%;max-width:700px;min-height:100vh;color:#c8c8c8;position:relative;}
-
-/* 開場 */
 #intro{position:fixed;inset:0;background:#0a0a0a;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;}
 .intro-tag{font-size:10px;color:#333;letter-spacing:5px;font-family:'Special Elite',monospace;margin-bottom:50px;}
 .intro-chapter{font-size:11px;color:#444;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;}
@@ -27,8 +25,6 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .start-btn{background:transparent;border:1px solid #333;color:#666;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
 .start-btn:hover{border-color:#666;color:#aaa;}
 .intro-footer{position:absolute;bottom:24px;font-size:9px;color:#2a2a2a;letter-spacing:3px;font-family:'Special Elite',monospace;}
-
-/* 遊戲 */
 #game{display:none;}
 .scene{position:relative;width:100%;height:55vh;min-height:340px;background:#181818;overflow:hidden;filter:grayscale(1) contrast(1.1);}
 .wall{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#1a1a1a 0,#1a1a1a 1px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,#1a1a1a 0,#1a1a1a 1px,transparent 1px,transparent 80px);opacity:.25;}
@@ -47,7 +43,6 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .pp1{width:55px;height:70px;bottom:110px;left:18%;transform:rotate(-12deg);}
 .pp2{width:50px;height:65px;bottom:106px;left:30%;transform:rotate(7deg);}
 .pp3{width:48px;height:62px;bottom:115px;right:18%;transform:rotate(-4deg);}
-
 .item{position:absolute;cursor:pointer;transition:filter .2s,transform .15s;}
 .item:hover{filter:brightness(2) drop-shadow(0 0 6px #777);transform:scale(1.07);}
 .item.solved{filter:brightness(.25) saturate(0);}
@@ -66,11 +61,9 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .lbk-morse{font-size:10px;color:#555;letter-spacing:2px;line-height:1.9;font-family:'Special Elite',monospace;}
 .lbk-seal{position:absolute;bottom:4px;right:3px;width:14px;height:14px;border:1px solid #333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:6px;color:#444;}
 .dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;}
-
-/* Modal */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
 .ov.show{display:flex;}
-.modal{background:#181818;border:1px solid #333;border-radius:4px;padding:26px;max-width:420px;width:100%;position:relative;max-height:88vh;overflow-y:auto;}
+.modal{background:#181818;border:1px solid #333;border-radius:4px;padding:20px;max-width:420px;width:100%;position:relative;max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #2a2a2a;color:#555;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
 .modal-x:hover{border-color:#555;color:#aaa;}
 .modal-chapter{font-size:9px;color:#444;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
@@ -98,8 +91,6 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #222;color:#444;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
 .back-btn:hover{color:#888;border-color:#444;}
 .solved-notice{font-size:12px;color:#5a8;margin-top:10px;letter-spacing:1px;}
-
-/* 底部 */
 .bui{background:#0e0e0e;padding:22px 26px;border-top:1px solid #1e1e1e;}
 .chapter-tag{font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:10px;}
 .stext{font-size:13px;color:#666;line-height:2.2;margin-bottom:18px;min-height:50px;}
@@ -115,21 +106,32 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .sbtn:hover{border-color:#666;color:#bbb;}
 .fb{font-size:11px;color:#444;}
 .fb.ok{color:#6a9;}.fb.no{color:#a66;}
-
-/* 解鎖區 */
 .unlock-section{display:none;margin-top:22px;padding-top:22px;border-top:1px solid #1e1e1e;}
 .unlock-section.show{display:block;}
 .unlock-story{font-size:13px;color:#666;line-height:2.4;margin-bottom:20px;}
 .unlock-story em{color:#888;font-style:normal;}
-.unlock-next{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:16px 20px;}
+.unlock-next{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:16px 20px;margin-bottom:28px;}
 .unlock-next p{font-size:10px;color:#444;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;}
 .unlock-link{font-size:13px;color:#7a9aaa;font-family:'Special Elite',monospace;word-break:break-all;cursor:pointer;transition:color .2s;}
 .unlock-link:hover{color:#aaccdd;}
-</style>
+
+/* TMI 區 */
+.tmi-section{padding:4px 0 24px;}
+.tmi-title{font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;text-align:center;}
+.tmi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.tmi-card{background:#111;border:1px solid #1e1e1e;border-radius:4px;padding:14px;}
+.tmi-card.full{grid-column:1/-1;}
+.tmi-icon{font-size:15px;margin-bottom:6px;}
+.tmi-label{font-size:9px;color:#444;letter-spacing:1px;margin-bottom:5px;font-family:'Special Elite',monospace;}
+.tmi-val{font-size:12px;color:#777;line-height:1.8;}
+.tmi-val em{color:#999;font-style:normal;}
+.birthday-card{background:#111;border:1px solid #2a2a2a;border-radius:4px;padding:22px;text-align:center;margin-top:4px;}
+.birthday-card p{font-size:13px;color:#666;line-height:2.4;margin-bottom:8px;}
+.birthday-card p em{color:#888;font-style:normal;}
+.birthday-sign{font-size:10px;color:#333;letter-spacing:2px;margin-top:14px;font-family:'Special Elite',monospace;}
+@media(max-width:480px){.modal{padding:16px;max-height:90vh;}.tmi-grid{grid-template-columns:1fr;}.scene{height:45vh;}.slot{width:38px;height:38px;font-size:16px;}.cinput{width:100px;font-size:16px;}.ans-input{font-size:16px;}}</style>
 </head>
 <body>
-
-<!-- 開場 -->
 <div id="intro">
   <div class="intro-tag">MEMORY RECOLORIST</div>
   <div class="intro-chapter">第一章</div>
@@ -146,10 +148,9 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
     <input class="name-input" id="nameInput" type="text" placeholder="在此輸入" maxlength="10"/>
   </div>
   <button class="start-btn" onclick="startGame()">踏進那扇門</button>
-  <div class="intro-footer">DAY 01 of 05 &nbsp;·&nbsp; 2020</div>
+  <div class="intro-footer">DAY 01 of 05 · 2020</div>
 </div>
 
-<!-- 遊戲 -->
 <div class="gw" id="game">
   <div class="scene">
     <div class="wall"></div>
@@ -168,7 +169,6 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
     <div class="desk"><div class="dleg l"></div><div class="dleg r"></div></div>
     <div class="pp pp1"></div><div class="pp pp2"></div><div class="pp pp3"></div>
 
-    <!-- 時鐘 -->
     <div class="item" id="clock-item" onclick="openM('clock')">
       <svg width="88" height="88" viewBox="0 0 88 88">
         <circle cx="44" cy="44" r="41" fill="#161616" stroke="#444" stroke-width="2.5"/>
@@ -192,12 +192,10 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
       <div class="ilabel">停止的時鐘</div>
     </div>
 
-    <!-- 課本 -->
     <div class="item" id="book-item" onclick="openM('book')">
       <svg width="58" height="76" viewBox="0 0 58 76">
         <rect x="0" y="0" width="58" height="76" rx="2" fill="#1e1e1e" stroke="#333" stroke-width="2"/>
         <rect x="0" y="0" width="9" height="76" fill="#2a2a2a"/>
-        <line x1="9" y1="0" x2="9" y2="76" stroke="#333" stroke-width="1"/>
         <line x1="14" y1="11" x2="52" y2="11" stroke="#333" stroke-width="2"/>
         <line x1="14" y1="17" x2="46" y2="17" stroke="#333" stroke-width="2"/>
         <line x1="14" y1="27" x2="52" y2="27" stroke="#2a2a2a" stroke-width="1"/>
@@ -209,7 +207,6 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
       <div class="ilabel">微積分課本</div>
     </div>
 
-    <!-- 聯絡簿 -->
     <div class="item" id="letter-item" onclick="openM('letter')">
       <div class="lbk">
         <div class="lbk-spine"></div>
@@ -252,6 +249,57 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
           → https://kuobelong-beep.github.io/memory-recolorist/day2.html
         </div>
       </div>
+
+      <!-- TMI 區 -->
+      <div class="tmi-section">
+        <div class="tmi-title" id="tmiTitle">— 關於你的冷知識檔案 —</div>
+        <div class="tmi-grid">
+          <div class="tmi-card">
+            <div class="tmi-icon">♊</div>
+            <div class="tmi-label">STAR SIGN</div>
+            <div class="tmi-val">雙子座</div>
+          </div>
+          <div class="tmi-card">
+            <div class="tmi-icon">🍜</div>
+            <div class="tmi-label">FAVORITE FOOD</div>
+            <div class="tmi-val">麵類<br><em>「勞碌命」是一間麵店的名字，但我們都覺得說的就是你本人。</em></div>
+          </div>
+          <div class="tmi-card">
+            <div class="tmi-icon">🏠</div>
+            <div class="tmi-label">FAVORITE ACTIVITY</div>
+            <div class="tmi-val">宅在家追劇</div>
+          </div>
+          <div class="tmi-card">
+            <div class="tmi-icon">🦋</div>
+            <div class="tmi-label">NATURAL ENEMY</div>
+            <div class="tmi-val">蟲蟲、蝴蝶<br><em>是的，包含蝴蝶。</em></div>
+          </div>
+          <div class="tmi-card full">
+            <div class="tmi-icon">🍽️</div>
+            <div class="tmi-label">HUNGER MODE</div>
+            <div class="tmi-val">肚子餓想睡覺就會生氣，<em>餵食一下馬上開心得像小孩一樣</em>。這是公開的秘密。</div>
+          </div>
+          <div class="tmi-card">
+            <div class="tmi-icon">💬</div>
+            <div class="tmi-label">CATCHPHRASE</div>
+            <div class="tmi-val"><em>「蛤?!」</em><br><em>「WTF」</em></div>
+          </div>
+          <div class="tmi-card">
+            <div class="tmi-icon">😤</div>
+            <div class="tmi-label">STRESS MODE</div>
+            <div class="tmi-val">「我好躁喔！我好焦慮！」<br><em>需要有人靜靜地待著陪。</em></div>
+          </div>
+          <div class="tmi-card full">
+            <div class="tmi-icon">😂</div>
+            <div class="tmi-label">HIDDEN FEATURE</div>
+            <div class="tmi-val">會突然起笑，然後在外面發瘋。<em>本人至今不承認這很中二。</em></div>
+          </div>
+        </div>
+        <div class="birthday-card">
+          <p>生日快樂。<br>今天不用記公式，不用背課文。<br><em>只需要記得——你身邊有一群很愛你的人。</em></p>
+          <div class="birthday-sign">祝 分科測驗順利 &amp; 永遠開心</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -265,50 +313,29 @@ function startGame(){
   playerName=n||'旅人';
   document.getElementById('intro').style.display='none';
   document.getElementById('game').style.display='block';
+  document.getElementById('tmiTitle').textContent=`— 關於 ${playerName} 的冷知識檔案 —`;
   document.getElementById('st').innerHTML=`${playerName}，你在一個陌生的書房醒來。<em>四周的考卷一聲不響地掛在牆上，像是某種無法言說的指控。</em>你不記得自己是誰，也不記得自己為什麼在這裡。只有一種感覺還留著——有什麼東西，非常重要，在等你找回來。`;
 }
 
 const data={
   clock:{
-    chapter:'線索一',
-    title:'停止的時鐘',
+    chapter:'線索一',title:'停止的時鐘',
     story:'時鐘停在某個時刻。不是電池沒電，是被人刻意停下來的。\n\n鐘面上沒有數字，只有十二個奇怪的符號，排列在本該是刻度的位置。時針靜止，像是在指著什麼。\n\n旁邊貼著一張對照表，邊角已經微微捲起。',
-    extra:`<div class="table-wrap">
-<div style="font-size:9px;color:#444;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">符號對照表 · 從12點順時針</div>
-<div class="sym-grid">
-  <div class="tcell sym">✦</div><div class="tcell num">01</div>
-  <div class="tcell sym">◈</div><div class="tcell num">02</div>
-  <div class="tcell sym">⟡</div><div class="tcell num">03</div>
-  <div class="tcell sym">⌖</div><div class="tcell num">04</div>
-  <div class="tcell sym">⊕</div><div class="tcell num">05</div>
-  <div class="tcell sym">⋈</div><div class="tcell num">06</div>
-  <div class="tcell sym">⌬</div><div class="tcell num">07</div>
-  <div class="tcell sym">⟁</div><div class="tcell num">08</div>
-  <div class="tcell sym">◉</div><div class="tcell num">09</div>
-  <div class="tcell sym">⊛</div><div class="tcell num">10</div>
-  <div class="tcell sym">⌘</div><div class="tcell num">11</div>
-  <div class="tcell sym">❋</div><div class="tcell num">12</div>
-</div>
-<div style="font-size:11px;color:#444;margin-top:8px;">時針指向的符號，對應一個兩位數。</div>
-</div>`,
+    extra:`<div class="table-wrap"><div style="font-size:9px;color:#444;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">符號對照表 · 從12點順時針</div><div class="sym-grid"><div class="tcell sym">✦</div><div class="tcell num">01</div><div class="tcell sym">◈</div><div class="tcell num">02</div><div class="tcell sym">⟡</div><div class="tcell num">03</div><div class="tcell sym">⌖</div><div class="tcell num">04</div><div class="tcell sym">⊕</div><div class="tcell num">05</div><div class="tcell sym">⋈</div><div class="tcell num">06</div><div class="tcell sym">⌬</div><div class="tcell num">07</div><div class="tcell sym">⟁</div><div class="tcell num">08</div><div class="tcell sym">◉</div><div class="tcell num">09</div><div class="tcell sym">⊛</div><div class="tcell num">10</div><div class="tcell sym">⌘</div><div class="tcell num">11</div><div class="tcell sym">❋</div><div class="tcell num">12</div></div><div style="font-size:11px;color:#444;margin-top:8px;">時針指向的符號，對應一個兩位數。</div></div>`,
     answer:'08',slots:[0,1],inputLen:2,placeholder:'__',
     found:'08。你把數字寫下來，不知道它代表什麼。'
   },
   book:{
-    chapter:'線索二',
-    title:'微積分課本',
+    chapter:'線索二',title:'微積分課本',
     story:'課本翻到某頁，有一道題目被人用鉛筆框了起來。答案欄空著，不對，不是空著——是被橡皮擦仔細地抹去了。\n\n擦痕的輪廓依稀還在，像一個不願離去的影子。那是一個個位數。',
-    extra:`<div class="puzzle-box"><div class="eq">∫₀² ( ¾ x ) dx = <span style="color:#222;background:#222;padding:0 10px;border-radius:1px;">?</span></div></div>
-<div style="font-size:11px;color:#444;margin-top:8px;line-height:1.8;">先求不定積分，再代入上下界。答案為整數。</div>`,
+    extra:`<div class="puzzle-box"><div class="eq">∫₀² ( ¾ x ) dx = <span style="color:#222;background:#222;padding:0 10px;border-radius:1px;">?</span></div></div><div style="font-size:11px;color:#444;margin-top:8px;line-height:1.8;">先求不定積分，再代入上下界。答案為整數。</div>`,
     answer:'3',slots:[2],inputLen:1,placeholder:'_',
     found:'3。被擦去的答案，其實一直都在。'
   },
   letter:{
-    chapter:'線索三',
-    title:'聯絡簿',
+    chapter:'線索三',title:'聯絡簿',
     story:'聯絡簿翻開在老師的評語欄。那裡什麼字都沒有，只有一排奇怪的符號，整齊而刻意。\n\n全是長橫線。沒有說明，沒有提示。只是靜靜地等著你想起，這種符號叫什麼。',
-    extra:`<div class="morse-display">— — — — —</div>
-<div style="font-size:11px;color:#444;line-height:2;margin-top:8px;">摩斯密碼：<span style="color:#777">·</span> 短音　<span style="color:#777">—</span> 長音<br>數字 1：· — — — —<br>數字 2：· · — — —<br>數字 5：· · · · ·<br>其餘數字，規律自尋。</div>`,
+    extra:`<div class="morse-display">— — — — —</div><div style="font-size:11px;color:#444;line-height:2;margin-top:8px;">摩斯密碼：<span style="color:#777">·</span> 短音　<span style="color:#777">—</span> 長音<br>數字 1：· — — — —<br>數字 2：· · — — —<br>數字 5：· · · · ·<br>其餘數字，規律自尋。</div>`,
     answer:'0',slots:[3],inputLen:1,placeholder:'_',
     found:'0。五個長音。你翻譯出來，沉默了一會兒。'
   }
@@ -326,21 +353,11 @@ function openM(type){
     <div class="puzzle-label">謎題</div>
     ${d.extra||''}
     <div class="answer-area">
-      ${done
-        ?'<div class="solved-notice">✓ 線索已記下</div>'
-        :`<div class="answer-label">輸入答案</div>
-          <div class="answer-row">
-            <input class="ans-input" id="ans" type="text" maxlength="${d.inputLen}" placeholder="${d.placeholder}" style="width:${d.inputLen*38+28}px"/>
-            <button class="ans-btn" onclick="checkAns('${type}')">確認</button>
-            <span class="ans-fb" id="ans-fb"></span>
-          </div>`
-      }
+      ${done?'<div class="solved-notice">✓ 線索已記下</div>':`<div class="answer-label">輸入答案</div><div class="answer-row"><input class="ans-input" id="ans" type="text" maxlength="${d.inputLen}" placeholder="${d.placeholder}" style="width:${d.inputLen*38+28}px"/><button class="ans-btn" onclick="checkAns('${type}')">確認</button><span class="ans-fb" id="ans-fb"></span></div>`}
     </div>
-    <button class="back-btn" onclick="closeX()">← 回到房間</button>
-  `;
+    <button class="back-btn" onclick="closeX()">← 回到房間</button>`;
   document.getElementById('ov').classList.add('show');
-  const storyText=d.story.replace(/\n/g,' ');
-  document.getElementById('st').innerHTML=storyText;
+  document.getElementById('st').innerHTML=d.story.replace(/\n/g,' ');
   if(!done)setTimeout(()=>{const el=document.getElementById('ans');if(el)el.focus();},100);
 }
 
@@ -351,8 +368,7 @@ function checkAns(type){
   const val=document.getElementById('ans').value.trim();
   const fb=document.getElementById('ans-fb');
   if(val===d.answer){
-    fb.textContent='✓';
-    fb.className='ans-fb ok';
+    fb.textContent='✓';fb.className='ans-fb ok';
     setTimeout(()=>{
       solved[type]=true;
       d.slots.forEach((i,idx)=>{
@@ -360,16 +376,14 @@ function checkAns(type){
         s.textContent=d.answer.length>1?d.answer[idx]:d.answer;
         s.classList.add('filled');
       });
-      const idMap={clock:'clock-item',book:'book-item',letter:'letter-item'};
-      document.getElementById(idMap[type]).classList.add('solved');
+      document.getElementById(type==='clock'?'clock-item':type==='book'?'book-item':'letter-item').classList.add('solved');
       document.getElementById('st').innerHTML=d.found;
       closeX();
       const all=['s0','s1','s2','s3'].map(id=>document.getElementById(id).textContent);
       if(!all.includes('?'))document.getElementById('ci2').value=all.join('');
     },700);
   }else{
-    fb.textContent='×';
-    fb.className='ans-fb no';
+    fb.textContent='×';fb.className='ans-fb no';
     document.getElementById('ans').value='';
     document.getElementById('ans').focus();
     setTimeout(()=>{fb.textContent='';fb.className='ans-fb';},2000);
@@ -380,14 +394,12 @@ function checkFinal(){
   const v=document.getElementById('ci2').value.trim();
   const fb=document.getElementById('fb');
   if(v==='0830'){
-    fb.textContent='✓';
-    fb.className='fb ok';
+    fb.textContent='✓';fb.className='fb ok';
     document.getElementById('st').innerHTML=`8月30日。<em>那是你第一次走進那間教室的日子。</em>你不記得當時的臉，不記得當時的名字，但那個日期，像針一樣刺進了什麼地方。`;
     document.getElementById('unlockStory').innerHTML=`門縫裡透進了一絲光。<br><br>你站在書房中央，手裡握著那四個數字，感覺有什麼東西正在鬆動——不是鎖，是比鎖更深的地方。<br><br><em>繼續走。答案還沒有結束。</em>`;
     document.getElementById('unlockSection').classList.add('show');
   }else{
-    fb.textContent='×';
-    fb.className='fb no';
+    fb.textContent='×';fb.className='fb no';
     setTimeout(()=>{fb.textContent='';fb.className='fb';},2000);
   }
 }
