@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記憶重繪者 · Day 04</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Special+Elite&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1a0e00;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;}
+.gw{background:#1e1005;width:100%;max-width:700px;min-height:100vh;color:#e8c89a;position:relative;}
+
+/* 開場 */
+#intro{position:fixed;inset:0;background:#1a0e00;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;}
+.intro-tag{font-size:10px;color:#3a2010;letter-spacing:5px;font-family:'Special Elite',monospace;margin-bottom:50px;}
+.intro-chapter{font-size:11px;color:#6a4020;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;}
+.intro-title{font-size:28px;color:#d4956a;letter-spacing:4px;margin-bottom:6px;font-family:'Special Elite',monospace;}
+.intro-sub{font-size:12px;color:#6a4020;letter-spacing:2px;margin-bottom:50px;font-family:'Special Elite',monospace;}
+.intro-divider{width:40px;height:1px;background:#3a2010;margin:0 auto 40px;}
+.intro-body{font-size:13px;color:#8a6040;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;}
+.intro-body em{color:#c4956a;font-style:normal;}
+.start-btn{background:transparent;border:1px solid #3a2010;color:#8a6040;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
+.start-btn:hover{border-color:#c4956a;color:#e8c89a;}
+.intro-footer{position:absolute;bottom:24px;font-size:9px;color:#2a1508;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* 遊戲 */
+#game{display:none;}
+.scene{position:relative;width:100%;height:55vh;min-height:340px;background:#1a0e00;overflow:hidden;}
+
+/* 教室場景 - 暖橘黃 */
+.room-bg{position:absolute;inset:0;background:linear-gradient(180deg,#150a00 0%,#1e1005 50%,#251508 100%);}
+.room-ceil{position:absolute;top:0;left:0;right:0;height:48px;background:#110800;border-bottom:2px solid #2a1508;}
+.room-floor{position:absolute;bottom:0;left:0;right:0;height:90px;background:repeating-linear-gradient(90deg,#1e1208 0,#1e1208 59px,#221408 59px,#221408 60px);}
+.room-wall{position:absolute;top:48px;bottom:90px;left:0;right:0;background:#1a0e02;}
+
+/* 黑板 */
+.blackboard{position:absolute;top:55px;left:50%;transform:translateX(-50%);width:280px;height:130px;background:#0f1a0a;border:4px solid #3a2808;display:flex;align-items:center;justify-content:center;}
+.blackboard-content{font-size:9px;color:#2a4a20;font-family:'Special Elite',monospace;text-align:center;line-height:2;letter-spacing:1px;}
+.bb-frame{position:absolute;inset:-8px;border:8px solid #2a1808;pointer-events:none;}
+
+/* 窗戶 - 暖光透進來 */
+.warm-window{position:absolute;top:55px;right:20px;width:80px;height:110px;background:linear-gradient(180deg,rgba(255,180,80,.15),rgba(220,140,50,.08));border:2px solid rgba(220,160,80,.3);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:2px;}
+.warm-window::before{content:'';position:absolute;inset:-15px;background:radial-gradient(ellipse,rgba(255,160,60,.12),transparent 70%);pointer-events:none;}
+.wp{background:rgba(255,180,80,.07);border:1px solid rgba(220,160,80,.15);}
+
+/* 書桌組 - 兩張並排 */
+.desk-group{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);width:85%;max-width:520px;height:120px;display:flex;gap:8px;}
+.single-desk{flex:1;background:#1e1005;border-top:3px solid #3a2010;border-left:2px solid #2a1808;border-right:2px solid #2a1808;position:relative;}
+.single-desk.highlight{border-top-color:#c4956a;background:#221208;}
+.desk-label{position:absolute;top:4px;right:6px;font-size:7px;color:#4a2810;font-family:'Special Elite',monospace;}
+.sleg{position:absolute;bottom:-55px;width:12px;height:55px;background:#1a0e05;border:1px solid #2a1808;}
+.sleg.l{left:15px;}.sleg.r{right:15px;}
+
+/* 物件通用 */
+.item{position:absolute;cursor:pointer;transition:filter .2s,transform .15s;}
+.item:hover{filter:brightness(1.8) drop-shadow(0 0 8px rgba(220,150,60,.5));transform:scale(1.07);}
+.item.solved{filter:brightness(.3) saturate(.3);}
+.item.solved:hover{filter:brightness(.45);transform:scale(1.03);}
+.item.locked{cursor:not-allowed;filter:brightness(.4) saturate(.2);}
+.item.locked:hover{filter:brightness(.4) saturate(.2);transform:none;}
+.ilabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#8a6040;white-space:nowrap;background:rgba(20,8,0,.9);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s;pointer-events:none;}
+.item:hover .ilabel{opacity:1;}
+.lock-badge{position:absolute;top:-8px;right:-8px;font-size:10px;}
+
+/* 黑板物件 */
+#bb-item{top:58px;left:50%;transform:translateX(-50%);width:280px;height:130px;}
+
+/* 你的桌子（左） */
+#mydeskL{bottom:95px;left:12%;width:55px;height:40px;}
+/* 她的桌子（右） */
+#mydeskR{bottom:95px;left:42%;width:55px;height:40px;}
+/* 椅子下的便條 */
+#chairnote{bottom:88px;left:28%;width:35px;height:25px;}
+/* 鉛筆盒 */
+#pencilbox{bottom:112px;left:55%;width:60px;height:22px;}
+/* 窗戶 */
+#window-item{top:58px;right:20px;width:80px;height:110px;}
+/* 黑板擦 */
+#eraser-item{top:192px;left:50%;transform:translateX(-50%) translateX(-90px);width:45px;height:20px;}
+/* 書包（左桌旁） */
+#bag-item{bottom:88px;left:5%;width:45px;height:55px;}
+/* 課表 */
+#schedule-item{top:58px;left:96px;width:50px;height:70px;}
+/* 粉筆盒 */
+#chalk-item{top:192px;left:50%;transform:translateX(-50%) translateX(50px);width:50px;height:18px;}
+/* 日記本 */
+#diary-item{bottom:112px;right:12%;width:42px;height:52px;}
+
+.dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#3a2010;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(15,6,0,.95);z-index:100;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
+.ov.show{display:flex;}
+.modal{background:#1e1005;border:1px solid #4a2810;border-radius:4px;padding:24px;max-width:420px;width:100%;position:relative;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:auto;}
+.modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #3a2010;color:#8a6040;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
+.modal-x:hover{border-color:#c4956a;color:#e8c89a;}
+.modal-chapter{font-size:9px;color:#6a4020;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.modal h3{font-size:14px;color:#e8c89a;margin-bottom:14px;padding-right:80px;letter-spacing:.5px;line-height:1.6;}
+.modal-story{font-size:12px;color:#8a6040;line-height:2.2;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #2a1508;}
+.modal-story em{color:#c4956a;font-style:normal;}
+.puzzle-label{font-size:9px;color:#6a4020;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.puzzle-box{background:#150900;border:1px solid #3a2010;border-radius:3px;padding:14px;margin:10px 0;text-align:center;}
+.puzzle-box .eq{font-size:13px;color:#c4956a;line-height:2;}
+.locked-msg{font-size:12px;color:#4a2810;text-align:center;padding:20px;border:1px dashed #3a2010;border-radius:3px;margin:10px 0;line-height:2;}
+.answer-area{margin-top:16px;padding-top:16px;border-top:1px solid #2a1508;}
+.answer-label{font-size:9px;color:#6a4020;margin-bottom:10px;letter-spacing:2px;font-family:'Special Elite',monospace;}
+.answer-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.ans-input{background:#150900;border:1px solid #3a2010;color:#e8c89a;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s;}
+.ans-input:focus{border-color:#c4956a;}
+.ans-btn{background:transparent;border:1px solid #3a2010;color:#8a6040;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.ans-btn:hover{border-color:#c4956a;color:#e8c89a;}
+.ans-fb{font-size:11px;margin-left:6px;}
+.ans-fb.ok{color:#8a9a6a;}.ans-fb.no{color:#9a6a5a;}
+.back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #2a1508;color:#4a2810;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
+.back-btn:hover{color:#8a6040;border-color:#4a2810;}
+.solved-notice{font-size:12px;color:#8a9a6a;margin-top:10px;letter-spacing:1px;}
+.collect-btn{background:transparent;border:1px solid #3a2010;color:#8a6040;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;margin-top:10px;width:100%;text-align:center;}
+.collect-btn:hover{border-color:#c4956a;color:#e8c89a;}
+
+/* 英文密碼表 */
+.cipher-table{background:#150900;border:1px solid #3a2010;border-radius:3px;padding:12px;margin:10px 0;}
+.cipher-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:6px;}
+.cipher-cell{font-size:10px;padding:4px 2px;border-radius:2px;font-family:'Special Elite',monospace;text-align:center;}
+.cipher-cell.letter{color:#8a6040;background:#1a0e05;border:1px solid #2a1808;}
+.cipher-cell.number{color:#c4956a;background:#1e1205;border:1px solid #3a2010;}
+
+/* 底部 */
+.bui{background:#150900;padding:22px 26px;border-top:1px solid #2a1508;}
+.chapter-tag{font-size:9px;color:#3a2010;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:10px;}
+.stext{font-size:13px;color:#8a6040;line-height:2.2;margin-bottom:18px;min-height:50px;}
+.stext em{color:#c4956a;font-style:normal;}
+.prow{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.slots{display:flex;gap:8px;}
+.slot{width:44px;height:44px;border:1px solid #3a2010;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#3a2010;background:#150900;font-family:'Special Elite',monospace;transition:all .4s;}
+.slot.filled{border-color:#c4956a;color:#e8c89a;background:#1e1205;}
+.irow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.cinput{background:#150900;border:1px solid #3a2010;color:#e8c89a;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;}
+.cinput:focus{border-color:#c4956a;}
+.sbtn{background:transparent;border:1px solid #3a2010;color:#8a6040;padding:10px 22px;font-size:12px;cursor:pointer;border-radius:2px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.sbtn:hover{border-color:#c4956a;color:#e8c89a;}
+.fb{font-size:11px;color:#4a2810;}
+.fb.ok{color:#8a9a6a;}.fb.no{color:#9a6a5a;}
+.unlock-section{display:none;margin-top:22px;padding-top:22px;border-top:1px solid #2a1508;}
+.unlock-section.show{display:block;}
+.unlock-story{font-size:13px;color:#8a6040;line-height:2.6;margin-bottom:16px;}
+.unlock-story em{color:#c4956a;font-style:normal;}
+
+@media(max-width:480px){
+  .modal{padding:16px;max-height:90vh;}
+  .scene{height:45vh;}
+  .slot{width:38px;height:38px;font-size:16px;}
+  .cinput{width:100px;font-size:16px;}
+  .ans-input{font-size:16px;}
+  .cipher-grid{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="intro-tag">MEMORY RECOLORIST</div>
+  <div class="intro-chapter">第四章</div>
+  <div class="intro-title">鮮明的時光</div>
+  <div class="intro-sub">THE VIVID YEARS</div>
+  <div class="intro-divider"></div>
+  <div class="intro-body">
+    教室的光是暖的。<br><br>
+    你站在門口，看著那兩張並排的桌子。<em>有人坐在你旁邊很多年了。</em><br><br>
+    你幾乎想起來了。幾乎。
+  </div>
+  <button class="start-btn" onclick="startGame()">走進去</button>
+  <div class="intro-footer">DAY 04 of 05 · 教室</div>
+</div>
+
+<div class="gw" id="game">
+  <div class="scene">
+    <div class="room-bg"></div>
+    <div class="room-ceil"></div>
+    <div class="room-wall"></div>
+    <div class="room-floor"></div>
+    <div class="warm-window"><div class="wp"></div><div class="wp"></div><div class="wp"></div><div class="wp"></div></div>
+    <div class="desk-group">
+      <div class="single-desk highlight"><div class="desk-label">你</div><div class="sleg l"></div><div class="sleg r"></div></div>
+      <div class="single-desk highlight"><div class="desk-label">她</div><div class="sleg l"></div><div class="sleg r"></div></div>
+    </div>
+    <div class="dayhdr">DAY 04 · VIVID</div>
+
+    <!-- 黑板（點擊觸發） -->
+    <div class="item" id="bb-item" onclick="openM('bb')">
+      <div style="width:280px;height:130px;background:transparent;position:relative;">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div style="font-size:9px;color:#3a5a30;font-family:'Special Elite',monospace;text-align:center;line-height:2.2;letter-spacing:1px;">
+            A=4　B=3　C=2<br>
+            D=1　E=0　F=9<br>
+            G=8　H=7　I=6<br>
+            ···　···　···
+          </div>
+        </div>
+      </div>
+      <div class="ilabel">黑板上的字</div>
+    </div>
+
+    <!-- 你的桌上的東西（左桌） -->
+    <div class="item" id="mydeskL" onclick="openM('mydeskL')">
+      <svg width="55" height="40" viewBox="0 0 55 40">
+        <rect x="0" y="0" width="55" height="40" rx="1" fill="#1e1005" stroke="#3a2010" stroke-width="1"/>
+        <rect x="4" y="6" width="30" height="2" fill="#3a2010"/>
+        <rect x="4" y="12" width="25" height="2" fill="#2a1808"/>
+        <rect x="4" y="18" width="28" height="2" fill="#2a1808"/>
+        <text x="40" y="28" font-size="10" fill="#4a2810" font-family="serif">筆</text>
+      </svg>
+      <div class="ilabel">你的桌子</div>
+    </div>
+
+    <!-- 她的桌上的東西（右桌） -->
+    <div class="item" id="mydeskR" onclick="openM('mydeskR')">
+      <svg width="55" height="40" viewBox="0 0 55 40">
+        <rect x="0" y="0" width="55" height="40" rx="1" fill="#221208" stroke="#4a2810" stroke-width="1"/>
+        <rect x="4" y="6" width="28" height="2" fill="#4a2810"/>
+        <rect x="4" y="12" width="22" height="2" fill="#3a2010"/>
+        <rect x="4" y="18" width="26" height="2" fill="#3a2010"/>
+        <rect x="4" y="26" width="20" height="2" fill="#2a1808"/>
+        <circle cx="44" cy="20" r="6" fill="#1e1005" stroke="#4a2810" stroke-width="1"/>
+      </svg>
+      <div class="ilabel">她的桌子</div>
+    </div>
+
+    <!-- 椅子下的便條 -->
+    <div class="item" id="chairnote" onclick="openM('chairnote')">
+      <svg width="35" height="25" viewBox="0 0 35 25">
+        <rect x="0" y="0" width="35" height="25" rx="1" fill="#1a0e05" stroke="#3a2010" stroke-width="1"/>
+        <line x1="4" y1="8" x2="31" y2="8" stroke="#2a1808" stroke-width="1"/>
+        <line x1="4" y1="14" x2="28" y2="14" stroke="#2a1808" stroke-width="1"/>
+        <line x1="4" y1="20" x2="25" y2="20" stroke="#2a1808" stroke-width="1"/>
+      </svg>
+      <div class="ilabel">椅子下的便條</div>
+    </div>
+
+    <!-- 鉛筆盒 -->
+    <div class="item" id="pencilbox" onclick="openM('pencilbox')">
+      <svg width="60" height="22" viewBox="0 0 60 22">
+        <rect x="0" y="0" width="60" height="22" rx="2" fill="#1e1005" stroke="#4a2810" stroke-width="1.5"/>
+        <rect x="2" y="2" width="56" height="4" rx="1" fill="#2a1808"/>
+        <circle cx="30" cy="14" r="4" fill="#1a0e05" stroke="#3a2010" stroke-width="1"/>
+      </svg>
+      <div class="ilabel">鉛筆盒</div>
+    </div>
+
+    <!-- 黑板擦 -->
+    <div class="item" id="eraser-item" onclick="openM('eraser')">
+      <svg width="45" height="20" viewBox="0 0 45 20">
+        <rect x="0" y="4" width="45" height="14" rx="2" fill="#2a1808" stroke="#4a2810" stroke-width="1"/>
+        <rect x="0" y="4" width="45" height="5" rx="2" fill="#3a2010"/>
+      </svg>
+      <div class="ilabel">黑板擦</div>
+    </div>
+
+    <!-- 書包 -->
+    <div class="item" id="bag-item" onclick="openM('bag')">
+      <svg width="45" height="55" viewBox="0 0 45 55">
+        <rect x="2" y="10" width="41" height="43" rx="3" fill="#1e1005" stroke="#4a2810" stroke-width="1.5"/>
+        <path d="M14,10 Q14,2 22,2 Q31,2 31,10" fill="none" stroke="#3a2010" stroke-width="2"/>
+        <rect x="8" y="24" width="29" height="18" rx="2" fill="#1a0e05" stroke="#3a2010" stroke-width="1"/>
+        <circle cx="22" cy="33" r="3" fill="#2a1808" stroke="#4a2810" stroke-width="1"/>
+      </svg>
+      <div class="ilabel">書包</div>
+    </div>
+
+    <!-- 課表 -->
+    <div class="item" id="schedule-item" onclick="openM('schedule')">
+      <svg width="50" height="70" viewBox="0 0 50 70">
+        <rect x="0" y="0" width="50" height="70" rx="1" fill="#1a0e05" stroke="#3a2010" stroke-width="1"/>
+        <rect x="3" y="3" width="44" height="10" rx="1" fill="#2a1808"/>
+        <text x="25" y="11" text-anchor="middle" font-size="6" fill="#6a4020" font-family="serif">課表</text>
+        <line x1="3" y1="18" x2="47" y2="18" stroke="#2a1808" stroke-width="1"/>
+        <line x1="3" y1="28" x2="47" y2="28" stroke="#2a1808" stroke-width="1"/>
+        <line x1="3" y1="38" x2="47" y2="38" stroke="#2a1808" stroke-width="1"/>
+        <line x1="3" y1="48" x2="47" y2="48" stroke="#2a1808" stroke-width="1"/>
+        <line x1="18" y1="13" x2="18" y2="68" stroke="#2a1808" stroke-width="1"/>
+        <line x1="33" y1="13" x2="33" y2="68" stroke="#2a1808" stroke-width="1"/>
+      </svg>
+      <div class="ilabel">課表</div>
+    </div>
+
+    <!-- 粉筆盒 -->
+    <div class="item" id="chalk-item" onclick="openM('chalk')">
+      <svg width="50" height="18" viewBox="0 0 50 18">
+        <rect x="0" y="0" width="50" height="18" rx="1" fill="#1e1005" stroke="#3a2010" stroke-width="1"/>
+        <rect x="3" y="3" width="8" height="12" rx="1" fill="#3a2a20"/>
+        <rect x="13" y="3" width="8" height="12" rx="1" fill="#2a3a20"/>
+        <rect x="23" y="3" width="8" height="12" rx="1" fill="#3a2010"/>
+        <rect x="33" y="3" width="8" height="12" rx="1" fill="#3a2a20"/>
+      </svg>
+      <div class="ilabel">粉筆盒</div>
+    </div>
+
+    <!-- 日記本 -->
+    <div class="item" id="diary-item" onclick="openM('diary')">
+      <svg width="42" height="52" viewBox="0 0 42 52">
+        <rect x="0" y="0" width="42" height="52" rx="2" fill="#1e1005" stroke="#4a2810" stroke-width="1.5"/>
+        <rect x="0" y="0" width="7" height="52" fill="#2a1808"/>
+        <line x1="10" y1="12" x2="38" y2="12" stroke="#3a2010" stroke-width="1"/>
+        <line x1="10" y1="20" x2="38" y2="20" stroke="#2a1808" stroke-width="1"/>
+        <line x1="10" y1="28" x2="38" y2="28" stroke="#2a1808" stroke-width="1"/>
+        <line x1="10" y1="36" x2="38" y2="36" stroke="#2a1808" stroke-width="1"/>
+        <text x="21" y="48" text-anchor="middle" font-size="7" fill="#4a2810" font-family="serif">日記</text>
+      </svg>
+      <div class="ilabel">日記本</div>
+    </div>
+
+    <div class="ov" id="ov"><div class="modal" id="mc"></div></div>
+  </div>
+
+  <div class="bui">
+    <div class="chapter-tag">CHAPTER 04 · 時光</div>
+    <div class="stext" id="st">教室的光是暖的。兩張並排的桌子，兩疊交錯的課本，兩個人的痕跡，清晰得讓你心裡一緊。你幾乎想起來了。幾乎。</div>
+    <div class="prow">
+      <span style="font-size:9px;color:#3a2010;letter-spacing:2px;font-family:'Special Elite',monospace;">CLUE</span>
+      <div class="slots">
+        <div class="slot" id="s0">?</div>
+        <div class="slot" id="s1">?</div>
+        <div class="slot" id="s2">?</div>
+        <div class="slot" id="s3">?</div>
+      </div>
+    </div>
+    <div class="irow">
+      <input class="cinput" id="ci2" type="text" maxlength="4" placeholder="____"/>
+      <button class="sbtn" onclick="checkFinal()">解鎖記憶</button>
+      <span class="fb" id="fb"></span>
+    </div>
+    <div class="unlock-section" id="unlockSection">
+      <div class="unlock-story">
+        記憶回來的方式，不像開燈。<br><br>
+        比較像是——退潮。<br><br>
+        一層一層地，那些你以為永遠消失的東西，開始從沙子裡露出來。<br><br>
+        你想起了一間教室。想起了一個座位，和旁邊那把椅子。想起有人會趴在你的桌上，有人會在你心情不好的時候靜靜地待著，什麼話都不說，只是在那裡。<br><br>
+        你想起那六年不是只有考卷和分數。<br><br>
+        裡面還有笑聲。<em>有人在外面突然發瘋，有人肚子餓了就生氣、餵食了就開心。有人嘴上說嫌棄，卻從來沒有真的把你推開。</em><br><br>
+        你想起那個人的名字了。<br><br>
+        <em>不是旁白裡的角色，不是記憶裡模糊的輪廓——是一個真實的人，此刻就在某個地方，等著你想起今天是什麼日子。</em>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const solved={bb:false,mydeskL:false,mydeskR:false,chairnote:false,pencilbox:false,eraser:false,bag:false,schedule:false,chalk:false,diary:false};
+
+// 密碼 4447
+// 黑板提供密碼表（A=4,B=3...）
+// 各物件藏英文字母，查表得數字
+// 4個slot分別來自不同物件
+
+const data={
+  bb:{
+    chapter:'線索一',
+    title:'黑板上的字',
+    story:'黑板上有人寫了一張對照表，字跡工整，不像是今天才寫的。\n\n每個英文字母對應一個數字。\n\n「把這張表記起來，你會用到的。」',
+    extra:`<div class="cipher-table">
+<div style="font-size:9px;color:#6a4020;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">英文字母對照表</div>
+<div class="cipher-grid">
+<div class="cipher-cell letter">A</div><div class="cipher-cell number">4</div>
+<div class="cipher-cell letter">B</div><div class="cipher-cell number">3</div>
+<div class="cipher-cell letter">C</div><div class="cipher-cell number">2</div>
+<div class="cipher-cell letter">D</div><div class="cipher-cell number">1</div>
+<div class="cipher-cell letter">E</div><div class="cipher-cell number">0</div>
+<div class="cipher-cell letter">F</div><div class="cipher-cell number">9</div>
+<div class="cipher-cell letter">G</div><div class="cipher-cell number">8</div>
+<div class="cipher-cell letter">H</div><div class="cipher-cell number">7</div>
+<div class="cipher-cell letter">I</div><div class="cipher-cell number">6</div>
+<div class="cipher-cell letter">J</div><div class="cipher-cell number">5</div>
+<div class="cipher-cell letter">K</div><div class="cipher-cell number">4</div>
+<div class="cipher-cell letter">L</div><div class="cipher-cell number">3</div>
+<div class="cipher-cell letter">M</div><div class="cipher-cell number">2</div>
+<div class="cipher-cell letter">N</div><div class="cipher-cell number">1</div>
+<div class="cipher-cell letter">O</div><div class="cipher-cell number">0</div>
+</div>
+<div style="font-size:10px;color:#4a2810;margin-top:6px;">※ 查完表之後，去找其他線索。</div>
+</div>`,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'你把對照表抄下來。現在去找那些藏著字母的東西。',
+    onSolve: null
+  },
+  mydeskL:{
+    chapter:'線索二',
+    title:'你的桌子',
+    story:'你自己的桌子。課本、筆記、一支快沒水的原子筆。\n\n桌角有人刻了一個字母，細細的，像是隨手刻的，又像是很認真刻的。\n\n是「A」。',
+    extra:`<div class="puzzle-box"><div class="eq" style="font-size:24px;letter-spacing:4px;">A</div><div style="font-size:11px;color:#6a4020;margin-top:8px;">查黑板上的對照表，找出對應的數字。</div></div>`,
+    answer:'4', slots:[0], inputLen:1, placeholder:'_',
+    found:'A = 4。你自己的桌子，藏著第一個數字。',
+    onSolve: null
+  },
+  mydeskR:{
+    chapter:'線索三',
+    title:'她的桌子',
+    story:'她的桌子。比你的整齊，又比你的更有生活感。\n\n課本邊角折了幾頁，筆記本的封面有一個小小的圓圈塗鴉。\n\n抽屜裡有一張小紙條，上面只有一個字母：「A」。',
+    extra:`<div class="puzzle-box"><div class="eq" style="font-size:24px;letter-spacing:4px;">A</div><div style="font-size:11px;color:#6a4020;margin-top:8px;">查黑板上的對照表，找出對應的數字。</div></div>`,
+    answer:'4', slots:[1], inputLen:1, placeholder:'_',
+    found:'A = 4。她的桌子，藏著一樣的數字。你愣了一下。',
+    onSolve: null
+  },
+  chairnote:{
+    chapter:'線索四',
+    title:'椅子下的便條',
+    story:'椅子底下黏著一張便條紙，是被人特意放在那裡的。\n\n紙很小，字很少，只有一個字母，和一句話：\n\n「H。這是我們之間的第三個數字。」',
+    extra:`<div class="puzzle-box"><div class="eq" style="font-size:24px;letter-spacing:4px;">H</div><div style="font-size:11px;color:#6a4020;margin-top:8px;">查黑板上的對照表，找出對應的數字。</div></div>`,
+    answer:'7', slots:[2], inputLen:1, placeholder:'_',
+    found:'H = 7。便條上的字母，是第三個數字。',
+    onSolve: null
+  },
+  pencilbox:{
+    chapter:'線索五',
+    title:'鉛筆盒',
+    story:'鉛筆盒的底部貼著一張貼紙，貼紙上印著一個字母。\n\n是「B」。\n\n旁邊用很小的字寫著：「最後一個。」',
+    extra:`<div class="puzzle-box"><div class="eq" style="font-size:24px;letter-spacing:4px;">B</div><div style="font-size:11px;color:#6a4020;margin-top:8px;">查黑板上的對照表，找出對應的數字。</div></div>`,
+    answer:'3', slots:[3], inputLen:1, placeholder:'_',
+    found:'B = 3。最後一個數字，藏在鉛筆盒底下。',
+    onSolve: null
+  },
+  eraser:{
+    chapter:'背景',
+    title:'黑板擦',
+    story:'黑板擦上沾滿了粉筆灰。\n\n你拿起來，粉塵揚起來，在暖黃色的光裡慢慢飄散。\n\n這一幕，好像在哪裡見過。',
+    extra:null,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'粉塵在光裡飄散，像很久以前某個下午的樣子。',
+    onSolve: null
+  },
+  bag:{
+    chapter:'背景',
+    title:'書包',
+    story:'書包靠在椅腳邊，是她的。\n\n你俯身看了一眼，裡面有課本、有零食的包裝紙，還有一個你認識的東西——\n\n是你某次借給她、她一直沒還的筆記本。',
+    extra:null,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'那個筆記本。她一直沒還你，你也一直沒開口要。',
+    onSolve: null
+  },
+  schedule:{
+    chapter:'背景',
+    title:'課表',
+    story:'課表貼在牆上。你掃了一眼，發現某幾節課的格子被人用鉛筆打了小小的勾。\n\n都是同一個時間——你們有共同堂課的時候。',
+    extra:null,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'那些小勾。你數了數，不知道是誰打的。',
+    onSolve: null
+  },
+  chalk:{
+    chapter:'背景',
+    title:'粉筆盒',
+    story:'粉筆盒裡有幾支不同顏色的粉筆，還有一支幾乎用完的白色粉筆。\n\n最短的那支，用到只剩一截，還捨不得丟。',
+    extra:null,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'最短的那支粉筆。用到剩一截，還留著。',
+    onSolve: null
+  },
+  diary:{
+    chapter:'背景',
+    title:'日記本',
+    story:'日記本放在桌角，封面有一個小鎖。\n\n你沒有打開它。\n\n有些東西，不是你的，就不該看。',
+    extra:null,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'你把日記本放回去，原封不動。',
+    onSolve: null
+  }
+};
+
+function startGame(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('game').style.display='block';
+}
+
+function openM(type){
+  const d=data[type];
+  const done=solved[type];
+  const storyHtml=d.story.replace(/\n/g,'<br>');
+  let answerHtml='';
+  if(d.answer===null){
+    answerHtml=done?'<div class="solved-notice">✓ 已探索</div>':`<button class="collect-btn" onclick="collectNoAnswer('${type}')">記下這個細節</button>`;
+  }else if(done){
+    answerHtml='<div class="solved-notice">✓ 線索已記下</div>';
+  }else{
+    answerHtml=`<div class="answer-area"><div class="answer-label">輸入對應數字</div><div class="answer-row"><input class="ans-input" id="ans" type="text" maxlength="${d.inputLen}" placeholder="${d.placeholder}" style="width:${d.inputLen*38+28}px"/><button class="ans-btn" onclick="checkAns('${type}')">確認</button><span class="ans-fb" id="ans-fb"></span></div></div>`;
+  }
+  document.getElementById('mc').innerHTML=`
+    <button class="modal-x" onclick="closeX()">← 回到教室</button>
+    <div class="modal-chapter">${d.chapter}</div>
+    <h3>${d.title}</h3>
+    <div class="modal-story">${storyHtml}</div>
+    ${d.extra?'<div class="puzzle-label">線索</div>'+d.extra:''}
+    ${answerHtml}
+    <button class="back-btn" onclick="closeX()">← 回到教室</button>`;
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('st').innerHTML=d.story.replace(/\n/g,' ');
+  if(d.answer&&!done)setTimeout(()=>{const el=document.getElementById('ans');if(el)el.focus();},100);
+}
+
+function collectNoAnswer(type){
+  const d=data[type];
+  solved[type]=true;
+  if(d.onSolve)d.onSolve();
+  document.getElementById(type+'-item').classList.add('solved');
+  document.getElementById('st').innerHTML=d.found;
+  closeX();
+}
+
+function closeX(){document.getElementById('ov').classList.remove('show');}
+
+function checkAns(type){
+  const d=data[type];
+  const val=document.getElementById('ans').value.trim();
+  const fb=document.getElementById('ans-fb');
+  if(val===d.answer){
+    fb.textContent='✓';fb.className='ans-fb ok';
+    setTimeout(()=>{
+      solved[type]=true;
+      if(d.onSolve)d.onSolve();
+      d.slots.forEach((i,idx)=>{
+        const s=document.getElementById('s'+i);
+        s.textContent=d.answer.length>1?d.answer[idx]:d.answer;
+        s.classList.add('filled');
+      });
+      document.getElementById(type+'-item').classList.add('solved');
+      document.getElementById('st').innerHTML=d.found;
+      closeX();
+      const all=['s0','s1','s2','s3'].map(id=>document.getElementById(id).textContent);
+      if(!all.includes('?'))document.getElementById('ci2').value=all.join('');
+    },700);
+  }else{
+    fb.textContent='×';fb.className='ans-fb no';
+    document.getElementById('ans').value='';
+    document.getElementById('ans').focus();
+    setTimeout(()=>{fb.textContent='';fb.className='ans-fb';},2000);
+  }
+}
+
+function checkFinal(){
+  const v=document.getElementById('ci2').value.trim();
+  const fb=document.getElementById('fb');
+  if(v==='4447'){
+    fb.textContent='✓';fb.className='fb ok';
+    document.getElementById('st').innerHTML=`4447。<em>你們的座號。你的號碼，和她的號碼，靠在一起這麼多年。</em>記憶的顏色越來越暖，像傍晚透進教室的最後一道光。`;
+    document.getElementById('unlockSection').classList.add('show');
+  }else{
+    fb.textContent='×';fb.className='fb no';
+    setTimeout(()=>{fb.textContent='';fb.className='fb';},2000);
+  }
+}
+</script>
+</body>
+</html>
