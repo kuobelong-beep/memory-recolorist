@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記憶重繪者 · Day 03</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Special+Elite&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a1020;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;}
+.gw{background:#0f1c30;width:100%;max-width:700px;min-height:100vh;color:#c8d8e8;position:relative;}
+
+/* 開場 */
+#intro{position:fixed;inset:0;background:#0a1020;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;}
+.intro-tag{font-size:10px;color:#1e3050;letter-spacing:5px;font-family:'Special Elite',monospace;margin-bottom:50px;}
+.intro-chapter{font-size:11px;color:#3a6a9a;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;}
+.intro-title{font-size:28px;color:#8abfe8;letter-spacing:4px;margin-bottom:6px;font-family:'Special Elite',monospace;}
+.intro-sub{font-size:12px;color:#3a6a9a;letter-spacing:2px;margin-bottom:50px;font-family:'Special Elite',monospace;}
+.intro-divider{width:40px;height:1px;background:#2a5a8a;margin:0 auto 40px;}
+.intro-body{font-size:13px;color:#6a9ac8;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;}
+.intro-body em{color:#9acfef;font-style:normal;}
+.start-btn{background:transparent;border:1px solid #2a5a8a;color:#6a9ac8;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
+.start-btn:hover{border-color:#8abfe8;color:#bae0ff;}
+.intro-footer{position:absolute;bottom:24px;font-size:9px;color:#1e3050;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* 遊戲 */
+#game{display:none;}
+.scene{position:relative;width:100%;height:55vh;min-height:340px;background:#0d1e35;overflow:hidden;}
+
+/* 圖書館場景 */
+.lib-bg{position:absolute;inset:0;background:linear-gradient(180deg,#0c1830 0%,#0d1a2a 60%,#162840 100%);}
+.lib-ceil{position:absolute;top:0;left:0;right:0;height:50px;background:#0a1525;border-bottom:2px solid #162540;}
+.lib-floor{position:absolute;bottom:0;left:0;right:0;height:90px;background:repeating-linear-gradient(90deg,#101e30 0,#101e30 59px,#101c2a 59px,#101c2a 60px);}
+.lib-wall{position:absolute;top:50px;bottom:90px;left:0;right:0;background:#0d1c2e;}
+
+/* 窗戶藍光 */
+.window-glow{position:absolute;top:55px;right:40px;width:100px;height:120px;background:linear-gradient(180deg,rgba(100,180,255,.25),rgba(80,160,255,.12));border:1px solid rgba(100,180,255,.4);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:3px;}
+.win-p{background:rgba(100,180,255,.1);border:1px solid rgba(100,180,255,.2);}
+.window-glow::before{content:'';position:absolute;inset:-20px;background:radial-gradient(ellipse,rgba(80,160,255,.15),transparent 70%);pointer-events:none;}
+
+/* 書架 */
+.bookshelf-bg{position:absolute;top:50px;left:0;width:90px;bottom:90px;background:#0c1628;border-right:2px solid #162540;}
+.shelf-row{position:absolute;left:5px;right:5px;height:2px;background:#162540;}
+
+/* 桌子 */
+.desk-main{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);width:75%;max-width:460px;height:130px;background:#0d1a28;border-top:3px solid #264565;border-left:2px solid #1e3248;border-right:2px solid #1e3248;}
+.desk-leg{position:absolute;bottom:-60px;width:14px;height:60px;background:#101e30;border:1px solid #1e3248;}
+.desk-leg.l{left:20px;}.desk-leg.r{right:20px;}
+
+/* 燈光暈染 */
+.lamp-glow{position:absolute;top:45px;left:50%;transform:translateX(-50%);width:1px;height:25px;background:#2a5a8a;}
+.lamp-glow::after{content:'';position:absolute;top:25px;left:-12px;width:25px;height:2px;background:#2a5a8a;}
+
+.dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#2a5a8a;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* 物件通用 */
+.item{position:absolute;cursor:pointer;transition:filter .2s,transform .15s;}
+.item:hover{filter:brightness(1.8) drop-shadow(0 0 8px rgba(100,160,220,.6));transform:scale(1.07);}
+.item.solved{filter:brightness(.3) saturate(.3);}
+.item.solved:hover{filter:brightness(.45);transform:scale(1.03);}
+.item.locked{cursor:not-allowed;filter:brightness(.4) saturate(.2);}
+.item.locked:hover{filter:brightness(.4) saturate(.2);transform:none;}
+.ilabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#5a8ab8;white-space:nowrap;background:rgba(5,12,22,.9);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s;pointer-events:none;}
+.item:hover .ilabel{opacity:1;}
+.lock-badge{position:absolute;top:-8px;right:-8px;font-size:10px;}
+
+/* 書架物件 */
+#shelf-item{top:60px;left:8px;width:75px;height:160px;}
+.shelf-books{width:75px;height:160px;position:relative;}
+.sbook{position:absolute;border-radius:1px 2px 2px 1px;}
+
+/* 借書卡盒 */
+#card-item{bottom:100px;left:90px;width:55px;height:40px;}
+.card-box{width:55px;height:40px;background:#0d1a28;border:1px solid #2a5a8a;border-radius:2px;position:relative;display:flex;align-items:center;justify-content:center;}
+.card-box span{font-size:8px;color:#3a7aaa;letter-spacing:1px;font-family:'Special Elite',monospace;}
+
+/* 椅子 */
+#chair-item{bottom:88px;left:42%;width:70px;height:80px;}
+
+/* 置物箱 */
+#locker2-item{top:58px;right:155px;width:70px;height:90px;}
+.locker2{width:70px;height:90px;background:#0c1628;border:1px solid #182e48;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:2px;padding:3px;}
+.l2u{background:#101e30;border:1px solid #0f1f2f;position:relative;display:flex;align-items:center;justify-content:center;}
+.l2u span{font-size:7px;color:#2a5a8a;font-family:'Special Elite',monospace;}
+.l2u.target{border-color:#2a5a8a;}
+.l2u.target span{color:#4a8aaa;}
+
+/* 桌燈 */
+#lamp-item{bottom:125px;left:52%;width:60px;height:70px;}
+.lamp-obj{width:40px;height:55px;position:relative;}
+
+/* 筆記 */
+#note-item{bottom:100px;right:50px;width:55px;height:70px;}
+.note{width:55px;height:70px;background:#0d1c2e;border:1px solid #182e48;position:relative;padding:6px;}
+.note-line{height:1px;background:#182e48;margin-bottom:5px;}
+.note-hidden{font-size:7px;color:#0d1c2e;font-family:'Special Elite',monospace;line-height:1.6;}
+.note-hidden.revealed{color:#5a8ab8;}
+
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(6,14,28,.95);z-index:100;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
+.ov.show{display:flex;}
+.modal{background:#101e30;border:1px solid #2a5a8a;border-radius:4px;padding:24px;max-width:420px;width:100%;position:relative;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:auto;}
+.modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #2a5a8a;color:#5a8ab8;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
+.modal-x:hover{border-color:#7abfef;color:#bae0ff;}
+.modal-chapter{font-size:9px;color:#3a7aaa;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.modal h3{font-size:14px;color:#bae0ff;margin-bottom:14px;padding-right:80px;letter-spacing:.5px;line-height:1.6;}
+.modal-story{font-size:12px;color:#6a9ac8;line-height:2.2;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #182e48;}
+.modal-story em{color:#9acfef;font-style:normal;}
+.puzzle-label{font-size:9px;color:#3a7aaa;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.puzzle-box{background:#0c1628;border:1px solid #2a5a8a;border-radius:3px;padding:14px;margin:10px 0;text-align:center;}
+.puzzle-box .eq{font-size:13px;color:#9acfef;line-height:2;}
+.locked-msg{font-size:12px;color:#3a6a9a;text-align:center;padding:20px;border:1px dashed #2a5a8a;border-radius:3px;margin:10px 0;line-height:2;}
+.grid-display{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:10px 0;}
+.grid-cell{background:#0c1628;border:1px solid #2a5a8a;border-radius:2px;padding:6px;text-align:center;font-size:12px;font-family:'Special Elite',monospace;color:#5a8ab8;}
+.grid-cell.highlight{border-color:#7abfef;color:#bae0ff;background:#0d2035;}
+.answer-area{margin-top:16px;padding-top:16px;border-top:1px solid #182e48;}
+.answer-label{font-size:9px;color:#3a7aaa;margin-bottom:10px;letter-spacing:2px;font-family:'Special Elite',monospace;}
+.answer-row{display:flex;gap:8px;align-items:center;}
+.ans-input{background:#0c1628;border:1px solid #2a5a8a;color:#bae0ff;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s;}
+.ans-input:focus{border-color:#7abfef;}
+.ans-btn{background:transparent;border:1px solid #2a5a8a;color:#6a9ac8;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.ans-btn:hover{border-color:#7abfef;color:#bae0ff;}
+.ans-fb{font-size:11px;margin-left:6px;}
+.ans-fb.ok{color:#5a9a7a;}.ans-fb.no{color:#9a5a5a;}
+.back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #182e48;color:#3a6a9a;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
+.back-btn:hover{color:#5a8aaa;border-color:#3a6a9a;}
+.solved-notice{font-size:12px;color:#5a9a7a;margin-top:10px;letter-spacing:1px;}
+
+/* 底部 */
+.bui{background:#0c1628;padding:22px 26px;border-top:1px solid #182e48;}
+.chapter-tag{font-size:9px;color:#2a5a8a;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:10px;}
+.stext{font-size:13px;color:#6a9ac8;line-height:2.2;margin-bottom:18px;min-height:50px;}
+.stext em{color:#9acfef;font-style:normal;}
+.prow{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.slots{display:flex;gap:8px;}
+.slot{width:44px;height:44px;border:1px solid #2a5a8a;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#2a5a8a;background:#0c1628;font-family:'Special Elite',monospace;transition:all .4s;}
+.slot.filled{border-color:#7abfef;color:#bae0ff;background:#152840;}
+.irow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.cinput{background:#0c1628;border:1px solid #2a5a8a;color:#bae0ff;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;}
+.cinput:focus{border-color:#7abfef;}
+.sbtn{background:transparent;border:1px solid #2a5a8a;color:#6a9ac8;padding:10px 22px;font-size:12px;cursor:pointer;border-radius:2px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.sbtn:hover{border-color:#7abfef;color:#bae0ff;}
+.fb{font-size:11px;color:#3a6a9a;}
+.fb.ok{color:#5a9a7a;}.fb.no{color:#9a5a5a;}
+.unlock-section{display:none;margin-top:22px;padding-top:22px;border-top:1px solid #182e48;}
+.unlock-section.show{display:block;}
+.unlock-story{font-size:13px;color:#6a9ac8;line-height:2.4;margin-bottom:20px;}
+.unlock-story em{color:#9acfef;font-style:normal;}
+.unlock-next{background:#0c1628;border:1px solid #2a5a8a;border-radius:3px;padding:16px 20px;}
+.unlock-next p{font-size:10px;color:#3a7aaa;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;}
+.unlock-link{font-size:13px;color:#7abfef;font-family:'Special Elite',monospace;word-break:break-all;cursor:pointer;transition:color .2s;}
+.unlock-link:hover{color:#bae0ff;}
+
+@media(max-width:480px){
+  .modal{padding:16px;max-height:90vh;}
+  .scene{height:45vh;}
+  .slot{width:38px;height:38px;font-size:16px;}
+  .cinput{width:100px;font-size:16px;}
+  .ans-input{font-size:16px;}
+}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="intro-tag">MEMORY RECOLORIST</div>
+  <div class="intro-chapter">第三章</div>
+  <div class="intro-title">稜鏡之光</div>
+  <div class="intro-sub">THE PRISM LIGHT</div>
+  <div class="intro-divider"></div>
+  <div class="intro-body">
+    圖書館的燈是藍的。<br><br>
+    或者說，光本來就是藍的——只是你之前看不見。你走進去的時候，有一種奇怪的感覺：<em>這裡有兩個人的痕跡。</em><br><br>
+    其中一個是你。另一個，你還想不起來是誰。
+  </div>
+  <button class="start-btn" onclick="startGame()">走進去</button>
+  <div class="intro-footer">DAY 03 of 05 · 圖書館</div>
+</div>
+
+<div class="gw" id="game">
+  <div class="scene">
+    <div class="lib-bg"></div>
+    <div class="lib-ceil"></div>
+    <div class="lib-wall"></div>
+    <div class="lib-floor"></div>
+    <div class="bookshelf-bg">
+      <div class="shelf-row" style="top:30%"></div>
+      <div class="shelf-row" style="top:60%"></div>
+    </div>
+    <div class="window-glow">
+      <div class="win-p"></div><div class="win-p"></div>
+      <div class="win-p"></div><div class="win-p"></div>
+    </div>
+    <div class="lamp-glow"></div>
+    <div class="desk-main"><div class="desk-leg l"></div><div class="desk-leg r"></div></div>
+    <div class="dayhdr">DAY 03 · PRISM</div>
+
+    <!-- 書架 -->
+    <div class="item" id="shelf-item" onclick="openM('shelf')">
+      <div class="shelf-books">
+        <div class="sbook" style="left:2px;top:5px;width:14px;height:55px;background:#2a5a8a;"></div>
+        <div class="sbook" style="left:18px;top:8px;width:12px;height:52px;background:#183a58;"></div>
+        <div class="sbook" style="left:32px;top:3px;width:16px;height:57px;background:#1e3550;border:1px solid #2a5a8a;"></div>
+        <div class="sbook" style="left:50px;top:6px;width:13px;height:54px;background:#2a5a8a;"></div>
+        <div class="sbook" style="left:2px;top:75px;width:14px;height:50px;background:#183a58;"></div>
+        <div class="sbook" style="left:18px;top:72px;width:18px;height:53px;background:#1e3550;border:1px solid #3a6a9a;"></div>
+        <div class="sbook" style="left:38px;top:77px;width:12px;height:48px;background:#2a5a8a;"></div>
+        <div class="sbook" style="left:52px;top:74px;width:14px;height:51px;background:#183a58;"></div>
+        <div class="sbook" style="left:2px;top:140px;width:16px;height:15px;background:#0d2030;border:1px solid #2a5a8a;"></div>
+        <div class="sbook" style="left:20px;top:138px;width:14px;height:17px;background:#1e3550;"></div>
+        <div class="sbook" style="left:36px;top:141px;width:12px;height:14px;background:#2a5a8a;"></div>
+      </div>
+      <div class="ilabel">書架</div>
+    </div>
+
+    <!-- 借書卡盒（鎖定，需先解書架）-->
+    <div class="item locked" id="card-item" onclick="openM('card')">
+      <div class="card-box">
+        <span>索引卡</span>
+        <div class="lock-badge">🔒</div>
+      </div>
+      <div class="ilabel">借書卡盒（鎖定）</div>
+    </div>
+
+    <!-- 椅子 -->
+    <div class="item" id="chair-item" onclick="openM('chair')">
+      <svg width="70" height="80" viewBox="0 0 70 80">
+        <rect x="10" y="30" width="50" height="5" rx="1" fill="#2a5a8a"/>
+        <rect x="12" y="35" width="6" height="35" rx="1" fill="#142535"/>
+        <rect x="52" y="35" width="6" height="35" rx="1" fill="#142535"/>
+        <rect x="15" y="55" width="40" height="3" rx="1" fill="#2a5a8a"/>
+        <rect x="8" y="10" width="54" height="22" rx="2" fill="#1e3550" stroke="#2a5a8a" stroke-width="1"/>
+        <rect x="12" y="14" width="46" height="14" rx="1" fill="#152840"/>
+      </svg>
+      <div class="ilabel">並排的椅子</div>
+    </div>
+
+    <!-- 置物箱（鎖定，需先解椅子）-->
+    <div class="item locked" id="locker2-item" onclick="openM('locker2')">
+      <div class="locker2">
+        <div class="l2u"><span>A1</span></div>
+        <div class="l2u"><span>A2</span></div>
+        <div class="l2u"><span>B1</span></div>
+        <div class="l2u target"><span>B2</span></div>
+        <div class="l2u"><span>C1</span></div>
+        <div class="l2u"><span>C2</span></div>
+      </div>
+      <div class="lock-badge">🔒</div>
+      <div class="ilabel">置物箱（鎖定）</div>
+    </div>
+
+    <!-- 桌燈 -->
+    <div class="item" id="lamp-item" onclick="openM('lamp')">
+      <svg width="40" height="55" viewBox="0 0 40 55">
+        <line x1="20" y1="50" x2="20" y2="30" stroke="#2a5a8a" stroke-width="2"/>
+        <line x1="20" y1="30" x2="10" y2="18" stroke="#2a5a8a" stroke-width="2"/>
+        <polygon points="2,8 18,8 14,20 6,20" fill="#1e3550" stroke="#2a5a8a" stroke-width="1"/>
+        <ellipse cx="20" cy="50" rx="12" ry="3" fill="#152840" stroke="#2a5a8a" stroke-width="1"/>
+        <circle cx="10" cy="14" r="3" fill="#2a5a8a" id="bulb"/>
+      </svg>
+      <div class="ilabel">桌燈</div>
+    </div>
+
+    <!-- 窗邊筆記（鎖定，需先開燈）-->
+    <div class="item locked" id="note-item" onclick="openM('note')">
+      <div class="note">
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-line"></div>
+        <div class="note-hidden" id="note-text">
+          ░░░░░<br>░░░░░<br>░░░░░
+        </div>
+      </div>
+      <div class="lock-badge">🔒</div>
+      <div class="ilabel">窗邊筆記（鎖定）</div>
+    </div>
+
+    <div class="ov" id="ov"><div class="modal" id="mc"></div></div>
+  </div>
+
+  <div class="bui">
+    <div class="chapter-tag">CHAPTER 03 · 稜鏡</div>
+    <div class="stext" id="st">圖書館裡有兩個人的氣息。兩杯還沒喝完的飲料，兩疊交錯的筆記，兩把椅子靠得比平時更近。你不知道另一個人是誰，但你知道——他們在等你想起來。</div>
+    <div class="prow">
+      <span style="font-size:9px;color:#2a5a8a;letter-spacing:2px;font-family:'Special Elite',monospace;">CLUE</span>
+      <div class="slots">
+        <div class="slot" id="s0">?</div>
+        <div class="slot" id="s1">?</div>
+        <div class="slot" id="s2">?</div>
+        <div class="slot" id="s3">?</div>
+      </div>
+    </div>
+    <div class="irow">
+      <input class="cinput" id="ci2" type="text" maxlength="4" placeholder="____"/>
+      <button class="sbtn" onclick="checkFinal()">解鎖記憶</button>
+      <span class="fb" id="fb"></span>
+    </div>
+    <div class="unlock-section" id="unlockSection">
+      <div class="unlock-story" id="unlockStory"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const solved={shelf:false,card:false,chair:false,locker2:false,lamp:false,note:false};
+const unlocked={card:false,locker2:false,note:false};
+
+const data={
+  shelf:{
+    chapter:'線索一',
+    title:'書架',
+    story:'書架上的書排列得太整齊了，整齊到不像是真的在用。\n\n你抽出一本，裡面夾著一張紙，上面寫著一道物理題，還有一行小字：「把答案告訴索引卡。」',
+    extra:`<div class="puzzle-box">
+<div class="eq" style="font-size:12px;line-height:2.2;">
+一道光在折射率 n = √3 的玻璃中傳播，<br>
+以某個角度射向玻璃與空氣的界面。<br>
+已知該介質的全反射臨界角為 30°。<br><br>
+當入射角恰好等於臨界角時，<br>
+折射光線與界面的夾角是幾度？<br><br>
+<span style="font-size:10px;color:#3a7aaa;">（其他已知：光速 3×10⁸ m/s，溫度 25°C，玻璃厚度 2mm）</span>
+</div>
+</div>
+<div style="font-size:11px;color:#3a7aaa;margin-top:8px;line-height:1.8;">提示：全反射臨界角時，折射光線沿介面傳播。</div>`,
+    answer:'0', slots:[0], inputLen:1, placeholder:'_',
+    found:'0。答案出乎意料地簡單。你把它記下來，去找那個索引卡盒。',
+    onSolve: ()=>{ unlocked.card=true; document.getElementById('card-item').classList.remove('locked'); document.querySelector('#card-item .ilabel').textContent='借書卡盒'; document.querySelector('#card-item .lock-badge').textContent=''; }
+  },
+  card:{
+    chapter:'線索二',
+    title:'借書卡盒',
+    story:'索引卡盒裡有幾十張借書卡，但其中一張被翻面朝上，像是特意留給你的。\n\n卡片背面寫著一道算式，還有一行字：「這個數字，是我們班的第一個數字。」',
+    extra:`<div class="puzzle-box">
+<div class="eq">
+log₁₀ ( 1000 ) = ?
+</div>
+</div>
+<div style="font-size:11px;color:#3a7aaa;margin-top:8px;">答案為整數。</div>`,
+    answer:'3', slots:[1], inputLen:1, placeholder:'_',
+    found:'3。對數。你想起了什麼——班級的第一個數字。',
+    onSolve: null
+  },
+  chair:{
+    chapter:'線索三',
+    title:'並排的椅子',
+    story:'兩把椅子靠在一起，中間的距離比圖書館規定的還要近。\n\n你彎腰看了看椅子底下，有一張便條紙黏在椅腳上，上面畫著一個座標：\n\n「B2」\n\n旁邊寫著：「去找那排置物箱。」',
+    extra:`<div style="background:#0c1628;border:1px solid #2a5a8a;border-radius:3px;padding:14px;margin:10px 0;text-align:center;">
+<div style="font-size:12px;color:#9acfef;margin-bottom:10px;">椅子底下的便條</div>
+<div style="font-size:28px;color:#bae0ff;font-family:'Special Elite',monospace;letter-spacing:4px;">B2</div>
+<div style="font-size:11px;color:#3a7aaa;margin-top:8px;">去找那排置物箱。</div>
+</div>`,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'B2。你把座標記下來，抬頭看向牆邊的置物箱。',
+    onSolve: ()=>{ unlocked.locker2=true; document.getElementById('locker2-item').classList.remove('locked'); document.querySelector('#locker2-item .ilabel').textContent='置物箱'; document.querySelector('#locker2-item .lock-badge').textContent=''; }
+  },
+  locker2:{
+    chapter:'線索四',
+    title:'置物箱 B2',
+    story:'你找到 B2 格。裡面沒有東西，但格子內壁刻著一道題目。\n\n有人很有耐心地把這道題刻在這裡，等著你來。',
+    extra:`<div class="puzzle-box">
+<div class="eq" style="font-size:12px;line-height:2.2;">
+設複數 z = 2 + 2i，<br>
+求 |z|²  − Re(z)² − Im(z)² = ?<br><br>
+<span style="font-size:10px;color:#3a7aaa;">|z| 為模，Re(z) 為實部，Im(z) 為虛部</span>
+</div>
+</div>
+<div style="font-size:11px;color:#3a7aaa;margin-top:8px;">答案為整數。</div>`,
+    answer:'0', slots:[], inputLen:1, placeholder:'_',
+    found:'0。格子裡刻的題目，答案是零。你站在那裡想了一下。',
+    onSolve: null
+  },
+  lamp:{
+    chapter:'線索五',
+    title:'桌燈',
+    story:'桌燈的開關被人用膠帶貼住了，旁邊貼著一張小紙條：\n\n「先開燈，才看得見。」\n\n你撕掉膠帶，把燈打開。',
+    extra:`<div style="background:#0c1628;border:1px solid #2a5a8a;border-radius:3px;padding:14px;margin:10px 0;text-align:center;">
+<div style="font-size:12px;color:#6a9ac8;margin-bottom:10px;">開關被膠帶封住</div>
+<div style="font-size:13px;color:#9acfef;line-height:2;">「先開燈，才看得見。」</div>
+</div>`,
+    answer:null, slots:[], inputLen:0, placeholder:'',
+    found:'燈亮了。窗邊那本筆記，隱約透出了什麼。',
+    onSolve: ()=>{
+      unlocked.note=true;
+      document.getElementById('note-item').classList.remove('locked');
+      document.querySelector('#note-item .ilabel').textContent='窗邊筆記';
+      document.querySelector('#note-item .lock-badge').textContent='';
+      document.getElementById('note-text').classList.add('revealed');
+      document.getElementById('note-text').innerHTML='0·3<br>月·4<br>日';
+    }
+  },
+  note:{
+    chapter:'線索六',
+    title:'窗邊的筆記',
+    story:'燈光照在筆記上，原本空白的頁面透出了隱藏的文字——是用特殊的筆寫的，只有在特定角度的光下才看得見。\n\n你湊近去看。',
+    extra:`<div style="background:#0c1628;border:1px solid #2a5a8a;border-radius:3px;padding:20px;margin:10px 0;text-align:center;">
+<div style="font-size:11px;color:#3a7aaa;margin-bottom:12px;">燈光下顯現的文字</div>
+<div style="font-size:22px;color:#bae0ff;font-family:'Special Elite',monospace;letter-spacing:6px;line-height:2;">0 3<br>月 4<br>日</div>
+<div style="font-size:11px;color:#3a7aaa;margin-top:12px;">把月份的數字填入密碼的最後兩格。</div>
+</div>`,
+    answer:'04', slots:[2,3], inputLen:2, placeholder:'__',
+    found:'03月04日。你念出那個日期，嘴唇微微顫抖了一下。',
+    onSolve: null
+  }
+};
+
+function startGame(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('game').style.display='block';
+}
+
+function openM(type){
+  const d=data[type];
+  const item=document.getElementById(type==='locker2'?'locker2-item':type+'-item');
+  if(item && item.classList.contains('locked')){
+    document.getElementById('mc').innerHTML=`
+      <button class="modal-x" onclick="closeX()">← 回到圖書館</button>
+      <div class="modal-chapter">鎖定</div>
+      <h3>這裡還打不開。</h3>
+      <div class="locked-msg">需要先從其他地方找到線索，<br>才能開啟這個物件。<br><br>繼續探索圖書館。</div>
+      <button class="back-btn" onclick="closeX()">← 回到圖書館</button>`;
+    document.getElementById('ov').classList.add('show');
+    return;
+  }
+  const done=solved[type];
+  const storyHtml=d.story.replace(/\n/g,'<br>');
+  let answerHtml='';
+  if(d.answer===null){
+    answerHtml=`<div style="margin-top:14px;"><button class="ans-btn" style="width:100%" onclick="collectNoAnswer('${type}')">記下這條線索</button></div>`;
+  } else if(done){
+    answerHtml='<div class="solved-notice">✓ 線索已記下</div>';
+  } else {
+    answerHtml=`<div class="answer-area"><div class="answer-label">輸入答案</div><div class="answer-row"><input class="ans-input" id="ans" type="text" maxlength="${d.inputLen}" placeholder="${d.placeholder}" style="width:${d.inputLen*38+28}px"/><button class="ans-btn" onclick="checkAns('${type}')">確認</button><span class="ans-fb" id="ans-fb"></span></div></div>`;
+  }
+  document.getElementById('mc').innerHTML=`
+    <button class="modal-x" onclick="closeX()">← 回到圖書館</button>
+    <div class="modal-chapter">${d.chapter}</div>
+    <h3>${d.title}</h3>
+    <div class="modal-story">${storyHtml}</div>
+    ${d.extra?'<div class="puzzle-label">線索</div>'+d.extra:''}
+    ${answerHtml}
+    <button class="back-btn" onclick="closeX()">← 回到圖書館</button>`;
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('st').innerHTML=d.story.replace(/\n/g,' ');
+  if(d.answer&&!done)setTimeout(()=>{const el=document.getElementById('ans');if(el)el.focus();},100);
+}
+
+function collectNoAnswer(type){
+  const d=data[type];
+  solved[type]=true;
+  if(d.onSolve)d.onSolve();
+  document.getElementById(type==='locker2'?'locker2-item':type+'-item').classList.add('solved');
+  document.getElementById('st').innerHTML=d.found;
+  closeX();
+}
+
+function closeX(){document.getElementById('ov').classList.remove('show');}
+
+function checkAns(type){
+  const d=data[type];
+  const val=document.getElementById('ans').value.trim();
+  const fb=document.getElementById('ans-fb');
+  if(val===d.answer){
+    fb.textContent='✓';fb.className='ans-fb ok';
+    setTimeout(()=>{
+      solved[type]=true;
+      if(d.onSolve)d.onSolve();
+      d.slots.forEach((i,idx)=>{
+        const s=document.getElementById('s'+i);
+        s.textContent=d.answer.length>1?d.answer[idx]:d.answer;
+        s.classList.add('filled');
+      });
+      document.getElementById(type==='locker2'?'locker2-item':type+'-item').classList.add('solved');
+      document.getElementById('st').innerHTML=d.found;
+      closeX();
+      const all=['s0','s1','s2','s3'].map(id=>document.getElementById(id).textContent);
+      if(!all.includes('?'))document.getElementById('ci2').value=all.join('');
+    },700);
+  }else{
+    fb.textContent='×';fb.className='ans-fb no';
+    document.getElementById('ans').value='';
+    document.getElementById('ans').focus();
+    setTimeout(()=>{fb.textContent='';fb.className='ans-fb';},2000);
+  }
+}
+
+function checkFinal(){
+  const v=document.getElementById('ci2').value.trim();
+  const fb=document.getElementById('fb');
+  if(v==='0304'){
+    fb.textContent='✓';fb.className='fb ok';
+    document.getElementById('st').innerHTML=`03月04日。<em>那是你們班級的號碼——0304。</em>記憶的碎片開始發光，不是白光，是帶著藍色的光，像圖書館窗外的天空。`;
+    document.getElementById('unlockStory').innerHTML=`你站在圖書館的燈光下，手裡握著六條線索。<br><br>那個一直陪在你旁邊的人——你快要想起她了。<em>不是模糊的輪廓，是真實的臉。</em><br><br>繼續走。只剩兩步了。`;
+    document.getElementById('unlockSection').classList.add('show');
+  }else{
+    fb.textContent='×';fb.className='fb no';
+    setTimeout(()=>{fb.textContent='';fb.className='fb';},2000);
+  }
+}
+</script>
+</body>
+</html>
