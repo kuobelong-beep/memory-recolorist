@@ -8,147 +8,149 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Special+Elite&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;}
-.gw{background:#141414;width:100%;max-width:700px;min-height:100vh;color:#c8c8c8;position:relative;}
+.gw{background:#282828;width:100%;max-width:700px;min-height:100vh;color:#c8c8c8;position:relative;}
 #intro{position:fixed;inset:0;background:#0a0a0a;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;}
-.intro-tag{font-size:10px;color:#333;letter-spacing:5px;font-family:'Special Elite',monospace;margin-bottom:50px;}
-.intro-chapter{font-size:11px;color:#444;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;}
-.intro-title{font-size:28px;color:#aaa;letter-spacing:4px;margin-bottom:6px;font-family:'Special Elite',monospace;}
-.intro-sub{font-size:12px;color:#444;letter-spacing:2px;margin-bottom:50px;font-family:'Special Elite',monospace;}
-.intro-divider{width:40px;height:1px;background:#2a2a2a;margin:0 auto 40px;}
+.intro-tag{font-size:10px;color:#424242;letter-spacing:5px;font-family:'Special Elite',monospace;margin-bottom:50px;}
+.intro-chapter{font-size:11px;color:#555;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;}
+.intro-title{font-size:28px;color:#eeeeeedddcccbbb;letter-spacing:4px;margin-bottom:6px;font-family:'Special Elite',monospace;}
+.intro-sub{font-size:12px;color:#555;letter-spacing:2px;margin-bottom:50px;font-family:'Special Elite',monospace;}
+.intro-divider{width:40px;height:1px;background:#363636;margin:0 auto 40px;}
 .intro-body{font-size:13px;color:#555;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;}
-.intro-body em{color:#777;font-style:normal;}
+.intro-body em{color:#8a8a8a;font-style:normal;}
 .name-section{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:32px;}
-.name-label{font-size:10px;color:#444;letter-spacing:3px;}
-.name-input{background:transparent;border:none;border-bottom:1px solid #333;color:#bbb;font-size:18px;padding:8px 4px;width:200px;text-align:center;font-family:'Noto Serif TC',serif;letter-spacing:2px;outline:none;transition:border-color .3s;}
-.name-input:focus{border-color:#666;}
-.name-input::placeholder{color:#2a2a2a;font-size:14px;}
-.start-btn{background:transparent;border:1px solid #333;color:#666;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
-.start-btn:hover{border-color:#666;color:#aaa;}
-.intro-footer{position:absolute;bottom:24px;font-size:9px;color:#2a2a2a;letter-spacing:3px;font-family:'Special Elite',monospace;}
+.name-label{font-size:10px;color:#555;letter-spacing:3px;}
+.name-input{background:transparent;border:none;border-bottom:1px solid #424242;color:#eeeeeedddccc;font-size:18px;padding:8px 4px;width:200px;text-align:center;font-family:'Noto Serif TC',serif;letter-spacing:2px;outline:none;transition:border-color .3s;}
+.name-input:focus{border-color:#7a7a7a;}
+.name-input::placeholder{color:#363636;font-size:14px;}
+.start-btn{background:transparent;border:1px solid #424242;color:#7a7a7a;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
+.start-btn:hover{border-color:#7a7a7a;color:#eeeeeedddcccbbb;}
+.intro-footer{position:absolute;bottom:24px;font-size:9px;color:#363636;letter-spacing:3px;font-family:'Special Elite',monospace;}
 #game{display:none;}
-.scene{position:relative;width:100%;height:55vh;min-height:340px;background:#181818;overflow:hidden;filter:grayscale(1) contrast(1.1);}
-.wall{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#1a1a1a 0,#1a1a1a 1px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,#1a1a1a 0,#1a1a1a 1px,transparent 1px,transparent 80px);opacity:.25;}
-.wall-base{position:absolute;bottom:100px;left:0;right:0;height:2px;background:#2e2e2e;}
-.floor{position:absolute;bottom:0;left:0;right:0;height:100px;background:repeating-linear-gradient(90deg,#1e1e1e 0,#1e1e1e 59px,#222 59px,#222 60px);}
-.win{position:absolute;top:25px;right:50px;width:110px;height:130px;border:4px solid #333;background:#161616;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:3px;}
-.win-p{background:#1c1c1c;border:1px solid #252525;}
-.win-frame{position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;border:10px solid #2a2a2a;pointer-events:none;}
-.shelf{position:absolute;top:15px;left:15px;width:72px;height:210px;background:#1e1e1e;border:2px solid #2e2e2e;padding:6px 5px;display:flex;flex-direction:column;gap:3px;}
-.bk{border-radius:1px 3px 3px 1px;border:1px solid #333;flex-shrink:0;}
-.desk{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);width:80%;max-width:500px;height:150px;background:#1e1e1e;border-top:4px solid #2e2e2e;border-left:2px solid #252525;border-right:2px solid #252525;}
-.dleg{position:absolute;bottom:-65px;width:16px;height:65px;background:#1e1e1e;border:2px solid #2a2a2a;}
+.scene{position:relative;width:100%;height:55vh;min-height:340px;background:#484848;overflow:hidden;filter:grayscale(1) contrast(1.1);}
+.wall{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#323232 0,#323232 1px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,#323232 0,#323232 1px,transparent 1px,transparent 80px);opacity:.25;}
+.wall-base{position:absolute;bottom:100px;left:0;right:0;height:2px;background:#484848;}
+.floor{position:absolute;bottom:0;left:0;right:0;height:100px;background:repeating-linear-gradient(90deg,#282828 0,#282828 59px,#2e2e2e 59px,#2e2e2e 60px);}
+.win{position:absolute;top:25px;right:50px;width:110px;height:130px;border:4px solid #424242;background:#202020;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:3px;}
+.win-p{background:#262626;border:1px solid #323232;}
+.win-frame{position:absolute;top:-10px;left:-10px;right:-10px;bottom:-10px;border:10px solid #363636;pointer-events:none;}
+.shelf{position:absolute;top:15px;left:15px;width:72px;height:210px;background:#282828;border:2px solid #484848;padding:6px 5px;display:flex;flex-direction:column;gap:3px;}
+.bk{border-radius:1px 3px 3px 1px;border:1px solid #424242;flex-shrink:0;}
+.desk{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);width:80%;max-width:500px;height:150px;background:#282828;border-top:4px solid #484848;border-left:2px solid #323232;border-right:2px solid #323232;}
+.dleg{position:absolute;bottom:-65px;width:16px;height:65px;background:#282828;border:2px solid #363636;}
 .dleg.l{left:25px;}.dleg.r{right:25px;}
-.pp{position:absolute;background:#222;border:1px solid #2e2e2e;}
-.pp::after{content:'';position:absolute;top:8px;left:8px;right:8px;height:1px;background:#333;box-shadow:0 6px 0 #333,0 12px 0 #333,0 18px 0 #2e2e2e;}
+.pp{position:absolute;background:#2e2e2e;border:1px solid #484848;}
+.pp::after{content:'';position:absolute;top:8px;left:8px;right:8px;height:1px;background:#424242;box-shadow:0 6px 0 #424242,0 12px 0 #424242,0 18px 0 #484848;}
 .pp1{width:55px;height:70px;bottom:110px;left:18%;transform:rotate(-12deg);}
 .pp2{width:50px;height:65px;bottom:106px;left:30%;transform:rotate(7deg);}
 .pp3{width:48px;height:62px;bottom:115px;right:18%;transform:rotate(-4deg);}
 .item{position:absolute;cursor:pointer;transition:filter .2s,transform .15s;}
-.item:hover{filter:brightness(2) drop-shadow(0 0 6px #777);transform:scale(1.07);}
+.item:hover{filter:brightness(2) drop-shadow(0 0 6px #8a8a8a);transform:scale(1.07);}
 .item.solved{filter:brightness(.25) saturate(0);}
 .item.solved:hover{filter:brightness(.4);transform:scale(1.03);}
-.ilabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#666;white-space:nowrap;background:rgba(0,0,0,.9);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s;pointer-events:none;}
+.ilabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#7a7a7a;white-space:nowrap;background:rgba(0,0,0,.9);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s;pointer-events:none;}
 .item:hover .ilabel{opacity:1;}
 #clock-item{top:30px;left:100px;}
 #book-item{bottom:115px;left:32%;}
 #letter-item{bottom:120px;right:18%;width:75px;height:88px;}
-.lbk{width:75px;height:88px;background:#1e1e1e;border:2px solid #333;border-radius:2px 4px 4px 2px;position:relative;}
-.lbk-spine{position:absolute;left:0;top:0;bottom:0;width:8px;background:#2a2a2a;border-right:1px solid #333;}
+.lbk{width:75px;height:88px;background:#282828;border:2px solid #424242;border-radius:2px 4px 4px 2px;position:relative;}
+.lbk-spine{position:absolute;left:0;top:0;bottom:0;width:8px;background:#363636;border-right:1px solid #424242;}
 .lbk-rings{position:absolute;left:4px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;}
-.ring{width:7px;height:7px;border:1px solid #444;border-radius:50%;}
+.ring{width:7px;height:7px;border:1px solid #555;border-radius:50%;}
 .lbk-content{position:absolute;left:14px;top:6px;right:4px;bottom:4px;}
-.lbk-header{height:2px;background:#333;margin-bottom:5px;}
+.lbk-header{height:2px;background:#424242;margin-bottom:5px;}
 .lbk-morse{font-size:10px;color:#555;letter-spacing:2px;line-height:1.9;font-family:'Special Elite',monospace;}
-.lbk-seal{position:absolute;bottom:4px;right:3px;width:14px;height:14px;border:1px solid #333;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:6px;color:#444;}
-.dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;}
+.lbk-seal{position:absolute;bottom:4px;right:3px;width:14px;height:14px;border:1px solid #424242;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:6px;color:#555;}
+.dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#424242;letter-spacing:3px;font-family:'Special Elite',monospace;}
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
 .ov.show{display:flex;}
-.modal{background:#181818;border:1px solid #333;border-radius:4px;padding:20px;max-width:420px;width:100%;position:relative;max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #2a2a2a;color:#555;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
-.modal-x:hover{border-color:#555;color:#aaa;}
-.modal-chapter{font-size:9px;color:#444;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
-.modal h3{font-size:14px;color:#ccc;margin-bottom:14px;padding-right:80px;letter-spacing:.5px;line-height:1.6;}
-.modal-story{font-size:12px;color:#666;line-height:2.2;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #222;}
-.modal-story em{color:#888;font-style:normal;}
-.puzzle-label{font-size:9px;color:#444;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;}
-.puzzle-box{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:14px;margin:10px 0;}
-.puzzle-box .eq{font-size:14px;color:#aaa;line-height:2;text-align:center;}
-.morse-display{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:14px;font-family:'Special Elite',monospace;font-size:20px;color:#888;letter-spacing:8px;margin:10px 0;text-align:center;}
-.table-wrap{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:12px;margin:10px 0;}
+.modal{background:#484848;border:1px solid #424242;border-radius:4px;padding:20px;max-width:420px;width:100%;position:relative;max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #363636;color:#555;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
+.modal-x:hover{border-color:#555;color:#eeeeeedddcccbbb;}
+.modal-chapter{font-size:9px;color:#555;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.modal h3{font-size:14px;color:#eeeeeeddd;margin-bottom:14px;padding-right:80px;letter-spacing:.5px;line-height:1.6;}
+.modal-story{font-size:12px;color:#7a7a7a;line-height:2.2;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #2e2e2e;}
+.modal-story em{color:#9a9a9a;font-style:normal;}
+.puzzle-label{font-size:9px;color:#555;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.puzzle-box{background:#1c1c1c;border:1px solid #363636;border-radius:3px;padding:14px;margin:10px 0;}
+.puzzle-box .eq{font-size:14px;color:#eeeeeedddcccbbb;line-height:2;text-align:center;}
+.morse-display{background:#1c1c1c;border:1px solid #363636;border-radius:3px;padding:14px;font-family:'Special Elite',monospace;font-size:20px;color:#9a9a9a;letter-spacing:8px;margin:10px 0;text-align:center;}
+.table-wrap{background:#1c1c1c;border:1px solid #363636;border-radius:3px;padding:12px;margin:10px 0;}
 .sym-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px;}
 .tcell{font-size:12px;padding:5px 4px;border-radius:2px;font-family:'Special Elite',monospace;text-align:center;}
-.tcell.sym{color:#777;background:#161616;border:1px solid #252525;}
-.tcell.num{color:#aaa;background:#1e1e1e;border:1px solid #2a2a2a;}
-.answer-area{margin-top:16px;padding-top:16px;border-top:1px solid #1e1e1e;}
-.answer-label{font-size:9px;color:#444;margin-bottom:10px;letter-spacing:2px;font-family:'Special Elite',monospace;}
+.tcell.sym{color:#8a8a8a;background:#202020;border:1px solid #323232;}
+.tcell.num{color:#eeeeeedddcccbbb;background:#282828;border:1px solid #363636;}
+.answer-area{margin-top:16px;padding-top:16px;border-top:1px solid #282828;}
+.answer-label{font-size:9px;color:#555;margin-bottom:10px;letter-spacing:2px;font-family:'Special Elite',monospace;}
 .answer-row{display:flex;gap:8px;align-items:center;}
-.ans-input{background:#111;border:1px solid #2a2a2a;color:#ccc;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s;}
+.ans-input{background:#1c1c1c;border:1px solid #363636;color:#eeeeeeddd;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s;}
 .ans-input:focus{border-color:#555;}
-.ans-btn{background:transparent;border:1px solid #333;color:#777;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;}
-.ans-btn:hover{border-color:#666;color:#bbb;}
+.ans-btn{background:transparent;border:1px solid #424242;color:#8a8a8a;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.ans-btn:hover{border-color:#7a7a7a;color:#eeeeeedddccc;}
 .ans-fb{font-size:11px;margin-left:6px;}
 .ans-fb.ok{color:#6a9;}.ans-fb.no{color:#a66;}
-.back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #222;color:#444;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
-.back-btn:hover{color:#888;border-color:#444;}
+.back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #2e2e2e;color:#555;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
+.back-btn:hover{color:#9a9a9a;border-color:#555;}
 .solved-notice{font-size:12px;color:#5a8;margin-top:10px;letter-spacing:1px;}
-.bui{background:#0e0e0e;padding:22px 26px;border-top:1px solid #1e1e1e;}
-.chapter-tag{font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:10px;}
-.stext{font-size:13px;color:#666;line-height:2.2;margin-bottom:18px;min-height:50px;}
-.stext em{color:#888;font-style:normal;}
+.bui{background:#181818;padding:22px 26px;border-top:1px solid #282828;}
+.chapter-tag{font-size:9px;color:#424242;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:10px;}
+.stext{font-size:13px;color:#7a7a7a;line-height:2.2;margin-bottom:18px;min-height:50px;}
+.stext em{color:#9a9a9a;font-style:normal;}
 .prow{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
 .slots{display:flex;gap:8px;}
-.slot{width:44px;height:44px;border:1px solid #2a2a2a;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#333;background:#111;font-family:'Special Elite',monospace;transition:all .4s;}
-.slot.filled{border-color:#666;color:#ccc;background:#1e1e1e;}
+.slot{width:44px;height:44px;border:1px solid #363636;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#424242;background:#1c1c1c;font-family:'Special Elite',monospace;transition:all .4s;}
+.slot.filled{border-color:#7a7a7a;color:#eeeeeeddd;background:#282828;}
 .irow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-.cinput{background:#111;border:1px solid #2a2a2a;color:#ccc;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;}
+.cinput{background:#1c1c1c;border:1px solid #363636;color:#eeeeeeddd;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;}
 .cinput:focus{border-color:#555;}
-.sbtn{background:transparent;border:1px solid #333;color:#777;padding:10px 22px;font-size:12px;cursor:pointer;border-radius:2px;font-family:'Noto Serif TC',serif;transition:all .2s;}
-.sbtn:hover{border-color:#666;color:#bbb;}
-.fb{font-size:11px;color:#444;}
+.sbtn{background:transparent;border:1px solid #424242;color:#8a8a8a;padding:10px 22px;font-size:12px;cursor:pointer;border-radius:2px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.sbtn:hover{border-color:#7a7a7a;color:#eeeeeedddccc;}
+.fb{font-size:11px;color:#555;}
 .fb.ok{color:#6a9;}.fb.no{color:#a66;}
-.unlock-section{display:none;margin-top:22px;padding-top:22px;border-top:1px solid #1e1e1e;}
+.unlock-section{display:none;margin-top:22px;padding-top:22px;border-top:1px solid #282828;}
 .unlock-section.show{display:block;}
-.unlock-story{font-size:13px;color:#666;line-height:2.4;margin-bottom:20px;}
-.unlock-story em{color:#888;font-style:normal;}
-.unlock-next{background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:16px 20px;margin-bottom:28px;}
-.unlock-next p{font-size:10px;color:#444;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;}
+.unlock-story{font-size:13px;color:#7a7a7a;line-height:2.4;margin-bottom:20px;}
+.unlock-story em{color:#9a9a9a;font-style:normal;}
+.unlock-next{background:#1c1c1c;border:1px solid #363636;border-radius:3px;padding:16px 20px;margin-bottom:28px;}
+.unlock-next p{font-size:10px;color:#555;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;}
 .unlock-link{font-size:13px;color:#7a9aaa;font-family:'Special Elite',monospace;word-break:break-all;cursor:pointer;transition:color .2s;}
 .unlock-link:hover{color:#aaccdd;}
 
 /* TMI 區 */
 .tmi-section{padding:4px 0 24px;}
-.tmi-title{font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;text-align:center;}
+.tmi-title{font-size:9px;color:#424242;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;text-align:center;}
 .tmi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.tmi-card{background:#111;border:1px solid #1e1e1e;border-radius:4px;padding:14px;}
+.tmi-card{background:#1c1c1c;border:1px solid #282828;border-radius:4px;padding:14px;}
 .tmi-card.full{grid-column:1/-1;}
 .tmi-icon{font-size:15px;margin-bottom:6px;}
-.tmi-label{font-size:9px;color:#444;letter-spacing:1px;margin-bottom:5px;font-family:'Special Elite',monospace;}
-.tmi-val{font-size:12px;color:#777;line-height:1.8;}
-.tmi-val em{color:#999;font-style:normal;}
-.birthday-card{background:#111;border:1px solid #2a2a2a;border-radius:4px;padding:22px;text-align:center;margin-top:4px;}
-.birthday-card p{font-size:13px;color:#666;line-height:2.4;margin-bottom:8px;}
-.birthday-card p em{color:#888;font-style:normal;}
-.birthday-sign{font-size:10px;color:#333;letter-spacing:2px;margin-top:14px;font-family:'Special Elite',monospace;}
+.tmi-label{font-size:9px;color:#555;letter-spacing:1px;margin-bottom:5px;font-family:'Special Elite',monospace;}
+.tmi-val{font-size:12px;color:#8a8a8a;line-height:1.8;}
+.tmi-val em{color:#ababab;font-style:normal;}
+.birthday-card{background:#1c1c1c;border:1px solid #363636;border-radius:4px;padding:22px;text-align:center;margin-top:4px;}
+.birthday-card p{font-size:13px;color:#7a7a7a;line-height:2.4;margin-bottom:8px;}
+.birthday-card p em{color:#9a9a9a;font-style:normal;}
+.birthday-sign{font-size:10px;color:#424242;letter-spacing:2px;margin-top:14px;font-family:'Special Elite',monospace;}
 @media(max-width:480px){.modal{padding:16px;max-height:90vh;}.tmi-grid{grid-template-columns:1fr;}.scene{height:45vh;}.slot{width:38px;height:38px;font-size:16px;}.cinput{width:100px;font-size:16px;}.ans-input{font-size:16px;}}</style>
 </head>
 <body>
 <div id="intro">
-  <div class="intro-tag">MEMORY RECOLORIST</div>
-  <div class="intro-chapter">第一章</div>
-  <div class="intro-title">單色荒原</div>
-  <div class="intro-sub">THE MONOCHROME WASTELAND</div>
-  <div class="intro-divider"></div>
-  <div class="intro-body">
-    你醒來的時候，房間裡沒有顏色。<br><br>
-    四面牆壁掛滿了空白的考卷，像是某種無聲的審判。桌上有一支筆、一疊講義，還有你看不懂的筆記。<em>你不記得自己是誰。</em><br><br>
-    但有個聲音，遠遠的，像是有人留下了什麼，在等你找。
+  <div style="position:fixed;inset:0;background:#000000;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;">
+    <div style="font-size:10px;color:#4a4a4a;letter-spacing:6px;font-family:'Special Elite',monospace;margin-bottom:48px;">MEMORY RECOLORIST</div>
+    <div style="font-size:11px;color:#686868;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;">第一章</div>
+    <div style="font-size:36px;color:#cccccc;letter-spacing:5px;margin-bottom:10px;font-family:'Noto Serif TC',serif;font-weight:700;">單色荒原</div>
+    <div style="font-size:12px;color:#5a5a5a;letter-spacing:3px;margin-bottom:48px;font-family:'Special Elite',monospace;">THE MONOCHROME WASTELAND</div>
+    <div style="width:40px;height:1px;background:#2a2a2a;margin:0 auto 40px;"></div>
+    <div style="font-size:13px;color:#848484;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;">
+      你醒來的時候，房間裡沒有顏色。<br><br>
+      四面牆壁掛滿了空白的考卷，像是某種無聲的審判。桌上有一支筆、一疊講義，還有你看不懂的筆記。<span style="color:#aaaaaa;">你不記得自己是誰。</span><br><br>
+      但有個聲音，遠遠的，像是有人留下了什麼，在等你找。
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:32px;">
+      <div style="font-size:10px;color:#505050;letter-spacing:3px;">你叫什麼名字</div>
+      <input id="nameInput" type="text" placeholder="在此輸入" maxlength="10" style="background:transparent;border:none;border-bottom:1px solid #3a3a3a;color:#cccccc;font-size:18px;padding:8px 4px;width:200px;text-align:center;font-family:'Noto Serif TC',serif;letter-spacing:2px;outline:none;"/>
+    </div>
+    <button onclick="startGame()" style="background:transparent;border:1px solid #3a3a3a;color:#787878;padding:12px 40px;font-size:11px;cursor:pointer;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;" onmouseover="this.style.borderColor='#888';this.style.color='#bbb'" onmouseout="this.style.borderColor='#3a3a3a';this.style.color='#787878'">踏進那扇門</button>
+    <div style="position:absolute;bottom:24px;font-size:9px;color:#2a2a2a;letter-spacing:3px;font-family:'Special Elite',monospace;">DAY 01 of 05</div>
   </div>
-  <div class="name-section">
-    <div class="name-label">你叫什麼名字</div>
-    <input class="name-input" id="nameInput" type="text" placeholder="在此輸入" maxlength="10"/>
-  </div>
-  <button class="start-btn" onclick="startGame()">踏進那扇門</button>
-  <div class="intro-footer">DAY 01 of 05 · 2020</div>
 </div>
 
 <div class="gw" id="game">
@@ -159,20 +161,20 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
     <div class="dayhdr">DAY 01 · MONOCHROME</div>
     <div class="win"><div class="win-p"></div><div class="win-p"></div><div class="win-p"></div><div class="win-p"></div><div class="win-frame"></div></div>
     <div class="shelf">
-      <div class="bk" style="height:28px;background:#252525;"></div>
-      <div class="bk" style="height:22px;background:#2e2e2e;width:85%;"></div>
-      <div class="bk" style="height:30px;background:#222;"></div>
-      <div class="bk" style="height:20px;background:#2a2a2a;width:90%;"></div>
-      <div class="bk" style="height:26px;background:#252525;"></div>
-      <div class="bk" style="height:18px;background:#2e2e2e;width:70%;"></div>
+      <div class="bk" style="height:28px;background:#323232;"></div>
+      <div class="bk" style="height:22px;background:#484848;width:85%;"></div>
+      <div class="bk" style="height:30px;background:#2e2e2e;"></div>
+      <div class="bk" style="height:20px;background:#363636;width:90%;"></div>
+      <div class="bk" style="height:26px;background:#323232;"></div>
+      <div class="bk" style="height:18px;background:#484848;width:70%;"></div>
     </div>
     <div class="desk"><div class="dleg l"></div><div class="dleg r"></div></div>
     <div class="pp pp1"></div><div class="pp pp2"></div><div class="pp pp3"></div>
 
     <div class="item" id="clock-item" onclick="openM('clock')">
       <svg width="88" height="88" viewBox="0 0 88 88">
-        <circle cx="44" cy="44" r="41" fill="#161616" stroke="#444" stroke-width="2.5"/>
-        <circle cx="44" cy="44" r="36" fill="none" stroke="#222" stroke-width="1"/>
+        <circle cx="44" cy="44" r="41" fill="#202020" stroke="#555" stroke-width="2.5"/>
+        <circle cx="44" cy="44" r="36" fill="none" stroke="#2e2e2e" stroke-width="1"/>
         <text x="44" y="11" text-anchor="middle" font-size="8" fill="#555" font-family="serif">✦</text>
         <text x="67" y="19" text-anchor="middle" font-size="8" fill="#555" font-family="serif">◈</text>
         <text x="79" y="40" text-anchor="middle" font-size="8" fill="#555" font-family="serif">⟡</text>
@@ -180,29 +182,29 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
         <text x="61" y="77" text-anchor="middle" font-size="8" fill="#555" font-family="serif">⊕</text>
         <text x="44" y="83" text-anchor="middle" font-size="8" fill="#555" font-family="serif">⋈</text>
         <text x="27" y="77" text-anchor="middle" font-size="8" fill="#555" font-family="serif">⌬</text>
-        <text x="11" y="62" text-anchor="middle" font-size="10" fill="#ddd" font-family="serif" font-weight="bold">⟁</text>
+        <text x="11" y="62" text-anchor="middle" font-size="10" fill="#eeeeee" font-family="serif" font-weight="bold">⟁</text>
         <text x="7" y="40" text-anchor="middle" font-size="8" fill="#555" font-family="serif">◉</text>
         <text x="13" y="19" text-anchor="middle" font-size="8" fill="#555" font-family="serif">⊛</text>
         <text x="27" y="10" text-anchor="middle" font-size="8" fill="#555" font-family="serif">⌘</text>
         <text x="61" y="10" text-anchor="middle" font-size="8" fill="#555" font-family="serif">❋</text>
-        <line x1="44" y1="44" x2="22" y2="57" stroke="#999" stroke-width="4" stroke-linecap="round"/>
-        <line x1="44" y1="44" x2="29" y2="14" stroke="#bbb" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="44" cy="44" r="4" fill="#777"/>
+        <line x1="44" y1="44" x2="22" y2="57" stroke="#ababab" stroke-width="4" stroke-linecap="round"/>
+        <line x1="44" y1="44" x2="29" y2="14" stroke="#eeeeeedddccc" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="44" cy="44" r="4" fill="#8a8a8a"/>
       </svg>
       <div class="ilabel">停止的時鐘</div>
     </div>
 
     <div class="item" id="book-item" onclick="openM('book')">
       <svg width="58" height="76" viewBox="0 0 58 76">
-        <rect x="0" y="0" width="58" height="76" rx="2" fill="#1e1e1e" stroke="#333" stroke-width="2"/>
-        <rect x="0" y="0" width="9" height="76" fill="#2a2a2a"/>
-        <line x1="14" y1="11" x2="52" y2="11" stroke="#333" stroke-width="2"/>
-        <line x1="14" y1="17" x2="46" y2="17" stroke="#333" stroke-width="2"/>
-        <line x1="14" y1="27" x2="52" y2="27" stroke="#2a2a2a" stroke-width="1"/>
-        <line x1="14" y1="33" x2="52" y2="33" stroke="#2a2a2a" stroke-width="1"/>
-        <line x1="14" y1="39" x2="52" y2="39" stroke="#2a2a2a" stroke-width="1"/>
-        <text x="33" y="55" text-anchor="middle" font-size="8" fill="#444" font-family="serif">∫ ?</text>
-        <circle cx="48" cy="66" r="6" fill="none" stroke="#333" stroke-width="1"/>
+        <rect x="0" y="0" width="58" height="76" rx="2" fill="#282828" stroke="#424242" stroke-width="2"/>
+        <rect x="0" y="0" width="9" height="76" fill="#363636"/>
+        <line x1="14" y1="11" x2="52" y2="11" stroke="#424242" stroke-width="2"/>
+        <line x1="14" y1="17" x2="46" y2="17" stroke="#424242" stroke-width="2"/>
+        <line x1="14" y1="27" x2="52" y2="27" stroke="#363636" stroke-width="1"/>
+        <line x1="14" y1="33" x2="52" y2="33" stroke="#363636" stroke-width="1"/>
+        <line x1="14" y1="39" x2="52" y2="39" stroke="#363636" stroke-width="1"/>
+        <text x="33" y="55" text-anchor="middle" font-size="8" fill="#555" font-family="serif">∫ ?</text>
+        <circle cx="48" cy="66" r="6" fill="none" stroke="#424242" stroke-width="1"/>
       </svg>
       <div class="ilabel">微積分課本</div>
     </div>
@@ -227,7 +229,7 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
     <div class="chapter-tag">CHAPTER 01 · 覺醒</div>
     <div class="stext" id="st">載入中……</div>
     <div class="prow">
-      <span style="font-size:9px;color:#333;letter-spacing:2px;font-family:'Special Elite',monospace;">CLUE</span>
+      <span style="font-size:9px;color:#424242;letter-spacing:2px;font-family:'Special Elite',monospace;">CLUE</span>
       <div class="slots">
         <div class="slot" id="s0">?</div>
         <div class="slot" id="s1">?</div>
@@ -246,7 +248,7 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 
       <!-- TMI 區 -->
       <div class="tmi-section">
-        <div class="tmi-title" id="tmiTitle">— 關於你的檔案 —</div>
+        <div class="tmi-title" id="tmiTitle">— 關於你的冷知識檔案 —</div>
         <div class="tmi-grid">
           <div class="tmi-card">
             <div class="tmi-icon">♊</div>
@@ -256,7 +258,7 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
           <div class="tmi-card">
             <div class="tmi-icon">🍜</div>
             <div class="tmi-label">FAVORITE FOOD</div>
-            <div class="tmi-val">麵類<br><em>「勞碌命」這間麵店，店名跟本人有點像。</em></div>
+            <div class="tmi-val">麵類<br><em>「勞碌命」是一間麵店的名字，但我們都覺得說的就是你本人。</em></div>
           </div>
           <div class="tmi-card">
             <div class="tmi-icon">🏠</div>
@@ -291,7 +293,7 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
         </div>
         <div class="birthday-card">
           <p>生日快樂。<br>今天不用記公式，不用背課文。<br><em>只需要記得——你身邊有一群很愛你的人。</em></p>
-          <div class="birthday-sign">等待明天 &amp; 繼續找尋失落的記憶</div>
+          <div class="birthday-sign">祝 分科測驗順利 &amp; 永遠開心</div>
         </div>
       </div>
     </div>
@@ -315,23 +317,23 @@ const data={
   clock:{
     chapter:'線索一',title:'停止的時鐘',
     story:'時鐘停在某個時刻。不是電池沒電，是被人刻意停下來的。\n\n鐘面上沒有數字，只有十二個奇怪的符號，排列在本該是刻度的位置。時針靜止，像是在指著什麼。\n\n旁邊貼著一張對照表，邊角已經微微捲起。',
-    extra:`<div class="table-wrap"><div style="font-size:9px;color:#444;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">符號對照表 · 從12點順時針</div><div class="sym-grid"><div class="tcell sym">✦</div><div class="tcell num">01</div><div class="tcell sym">◈</div><div class="tcell num">02</div><div class="tcell sym">⟡</div><div class="tcell num">03</div><div class="tcell sym">⌖</div><div class="tcell num">04</div><div class="tcell sym">⊕</div><div class="tcell num">05</div><div class="tcell sym">⋈</div><div class="tcell num">06</div><div class="tcell sym">⌬</div><div class="tcell num">07</div><div class="tcell sym">⟁</div><div class="tcell num">08</div><div class="tcell sym">◉</div><div class="tcell num">09</div><div class="tcell sym">⊛</div><div class="tcell num">10</div><div class="tcell sym">⌘</div><div class="tcell num">11</div><div class="tcell sym">❋</div><div class="tcell num">12</div></div><div style="font-size:11px;color:#444;margin-top:8px;">時針指向的符號，對應一個兩位數。</div></div>`,
+    extra:`<div class="table-wrap"><div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">符號對照表 · 從12點順時針</div><div class="sym-grid"><div class="tcell sym">✦</div><div class="tcell num">01</div><div class="tcell sym">◈</div><div class="tcell num">02</div><div class="tcell sym">⟡</div><div class="tcell num">03</div><div class="tcell sym">⌖</div><div class="tcell num">04</div><div class="tcell sym">⊕</div><div class="tcell num">05</div><div class="tcell sym">⋈</div><div class="tcell num">06</div><div class="tcell sym">⌬</div><div class="tcell num">07</div><div class="tcell sym">⟁</div><div class="tcell num">08</div><div class="tcell sym">◉</div><div class="tcell num">09</div><div class="tcell sym">⊛</div><div class="tcell num">10</div><div class="tcell sym">⌘</div><div class="tcell num">11</div><div class="tcell sym">❋</div><div class="tcell num">12</div></div><div style="font-size:11px;color:#555;margin-top:8px;">時針指向的符號，對應一個兩位數。</div></div>`,
     answer:'08',slots:[0,1],inputLen:2,placeholder:'__',
-    found:'08。你把數字寫下來，不知道它代表什麼。'
+    found:'08。八月。你不知道為什麼，腦海裡突然浮現一扇教室的門，虛掩著，光從走廊透進來。'
   },
   book:{
     chapter:'線索二',title:'微積分課本',
     story:'課本翻到某頁，有一道題目被人用鉛筆框了起來。答案欄空著，不對，不是空著——是被橡皮擦仔細地抹去了。\n\n擦痕的輪廓依稀還在，像一個不願離去的影子。那是一個個位數。',
-    extra:`<div class="puzzle-box"><div class="eq">∫₀² ( ¾ x ) dx = <span style="color:#222;background:#222;padding:0 10px;border-radius:1px;">?</span></div></div><div style="font-size:11px;color:#444;margin-top:8px;line-height:1.8;">先求不定積分，再代入上下界。答案為整數。</div>`,
+    extra:`<div class="puzzle-box"><div class="eq">∫₀² ( ¾ x ) dx = <span style="color:#2e2e2e;background:#2e2e2e;padding:0 10px;border-radius:1px;">?</span></div></div><div style="font-size:11px;color:#555;margin-top:8px;line-height:1.8;">先求不定積分，再代入上下界。答案為整數。</div>`,
     answer:'3',slots:[2],inputLen:1,placeholder:'_',
-    found:'3。被擦去的答案，其實一直都在。'
+    found:'3。一個數字，一個你好像在哪裡見過的數字。粉筆灰的味道，忽然從記憶裡飄出來。'
   },
   letter:{
     chapter:'線索三',title:'聯絡簿',
     story:'聯絡簿翻開在老師的評語欄。那裡什麼字都沒有，只有一排奇怪的符號，整齊而刻意。\n\n全是長橫線。沒有說明，沒有提示。只是靜靜地等著你想起，這種符號叫什麼。',
-    extra:`<div class="morse-display">— — — — —</div><div style="font-size:11px;color:#444;line-height:2;margin-top:8px;">摩斯密碼：<span style="color:#777">·</span> 短音　<span style="color:#777">—</span> 長音<br>數字 1：· — — — —<br>數字 2：· · — — —<br>數字 5：· · · · ·<br>其餘數字，規律自尋。</div>`,
+    extra:`<div class="morse-display">— — — — —</div><div style="font-size:11px;color:#555;line-height:2;margin-top:8px;">摩斯密碼：<span style="color:#8a8a8a">·</span> 短音　<span style="color:#8a8a8a">—</span> 長音<br>數字 1：· — — — —<br>數字 2：· · — — —<br>數字 5：· · · · ·<br>其餘數字，規律自尋。</div>`,
     answer:'0',slots:[3],inputLen:1,placeholder:'_',
-    found:'0。五個長音。你翻譯出來，沉默了一會兒。'
+    found:'0。五個長音，一個零。你站在那裡，感覺某扇門正在慢慢打開——不是眼前這扇，是更深處的那扇。'
   }
 };
 
@@ -389,8 +391,8 @@ function checkFinal(){
   const fb=document.getElementById('fb');
   if(v==='0830'){
     fb.textContent='✓';fb.className='fb ok';
-    document.getElementById('st').innerHTML=`8月30日。<em>那是你第一次走進那間教室的日子。</em>你不記得當時的臉，不記得當時的名字，但那個日期，像針一樣刺進了什麼地方。`;
-    document.getElementById('unlockStory').innerHTML=`門縫裡透進了一絲光。<br><br>你站在書房中央，手裡握著那四個數字，感覺有什麼東西正在鬆動——不是鎖，是比鎖更深的地方。<br><br><em>繼續走。答案還沒有結束。</em>`;
+    document.getElementById('st').innerHTML=`8月30日。<em>那是你第一天走進那間教室的日子。</em>`;
+    document.getElementById('unlockStory').innerHTML=`你想起來了。<br><br>那天的走廊是吵的，每個人都背著新書包，都帶著一張陌生的臉。你走進教室，找到自己的座位坐下，目光掃過黑板、掃過窗戶、掃過旁邊那個你完全不認識的人。<br><br>你不知道那個人是誰。<br>你不知道他們有一天會變得那麼重要。<br><br><em>但那天的光，你記得。是八月底，教室裡還殘留著暑假的熱。</em><br><br>記憶還沒有全部回來。繼續走。`;
     document.getElementById('unlockSection').classList.add('show');
   }else{
     fb.textContent='×';fb.className='fb no';
