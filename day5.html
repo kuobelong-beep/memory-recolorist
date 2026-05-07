@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記憶重繪者 · Day 05</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Special+Elite&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1a0a0e;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;}
+.gw{background:#1e0d10;width:100%;max-width:700px;min-height:100vh;color:#e8c8cc;position:relative;}
+
+/* 開場 */
+#intro{position:fixed;inset:0;background:#000;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;}
+.intro-tag{font-size:10px;color:#503035;letter-spacing:6px;font-family:'Special Elite',monospace;margin-bottom:48px;}
+.intro-chapter{font-size:11px;color:#806060;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;}
+.intro-title{font-size:36px;color:#e8a0b0;letter-spacing:5px;margin-bottom:10px;font-family:'Noto Serif TC',serif;font-weight:700;}
+.intro-sub{font-size:12px;color:#705055;letter-spacing:3px;margin-bottom:48px;font-family:'Special Elite',monospace;}
+.intro-divider{width:40px;height:1px;background:#2a1215;margin:0 auto 40px;}
+.intro-body{font-size:13px;color:#907075;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;}
+.intro-body em{color:#c89098;font-style:normal;}
+.start-btn{background:transparent;border:1px solid #4a2528;color:#907075;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
+.start-btn:hover{border-color:#c89098;color:#e8c8cc;}
+.intro-footer{position:absolute;bottom:24px;font-size:9px;color:#2a1215;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* 遊戲 */
+#game{display:none;}
+.scene{position:relative;width:100%;height:55vh;min-height:340px;overflow:hidden;}
+
+/* 半真實場景 - 粉色朦朧 */
+.scene-bg{position:absolute;inset:0;background:linear-gradient(180deg,#150608 0%,#1e0d10 40%,#221015 100%);}
+.memory-overlay{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(220,120,140,.08),transparent 70%);}
+.scene-floor{position:absolute;bottom:0;left:0;right:0;height:90px;background:repeating-linear-gradient(90deg,#1e1010 0,#1e1010 59px,#221215 59px,#221215 60px);}
+.scene-ceil{position:absolute;top:0;left:0;right:0;height:48px;background:#100508;border-bottom:1px solid #2a1015;}
+.scene-wall{position:absolute;top:48px;bottom:90px;left:0;right:0;background:#180a0d;}
+
+/* 窗戶 - 粉光透進來 */
+.pink-window{position:absolute;top:55px;right:30px;width:90px;height:115px;background:linear-gradient(180deg,rgba(220,120,140,.18),rgba(180,90,110,.08));border:2px solid rgba(220,140,160,.35);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:2px;}
+.pink-window::before{content:'';position:absolute;inset:-20px;background:radial-gradient(ellipse,rgba(220,120,140,.12),transparent 70%);pointer-events:none;}
+.pw{background:rgba(220,140,160,.07);border:1px solid rgba(220,140,160,.18);}
+
+/* 飄散的記憶碎片裝飾 */
+.petal{position:absolute;width:6px;height:6px;background:rgba(220,120,140,.15);border-radius:50%;animation:float 6s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg);opacity:.15;}50%{transform:translateY(-20px) rotate(180deg);opacity:.3;}}
+
+/* 桌子 */
+.desk-final{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);width:80%;max-width:500px;height:130px;background:#1e1010;border-top:3px solid #3a1820;border-left:2px solid #2a1215;border-right:2px solid #2a1215;}
+.dfleg{position:absolute;bottom:-60px;width:14px;height:60px;background:#1a0e10;border:1px solid #2a1215;}
+.dfleg.l{left:20px;}.dfleg.r{right:20px;}
+
+/* 物件通用 */
+.item{position:absolute;cursor:pointer;transition:filter .2s,transform .15s;}
+.item:hover{filter:brightness(1.8) drop-shadow(0 0 10px rgba(220,120,140,.5));transform:scale(1.07) translateY(-2px);}
+.item.solved{filter:brightness(.6) saturate(.5);}
+.item.solved:hover{filter:brightness(.75) saturate(.6);transform:scale(1.03);}
+.item.locked{cursor:not-allowed;filter:brightness(.35) saturate(.2);}
+.item.locked:hover{filter:brightness(.35);transform:none;}
+.ilabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#907075;white-space:nowrap;background:rgba(15,5,8,.9);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s;pointer-events:none;}
+.item:hover .ilabel{opacity:1;}
+.lock-badge{position:absolute;top:-8px;right:-8px;font-size:10px;}
+
+/* 密碼表（牆上） */
+#cipherA-item{top:58px;left:15px;width:85px;height:110px;}
+/* 加密信件 */
+#letterA-item{bottom:100px;left:80px;width:60px;height:75px;}
+/* 數字對照表（牆上）*/
+#cipherB-item{top:58px;left:110px;width:75px;height:95px;}
+/* 加密明信片 */
+#postcardB-item{bottom:100px;right:80px;width:70px;height:50px;}
+/* 蠟燭蛋糕 */
+#cake-item{bottom:98px;left:50%;transform:translateX(-50%);width:65px;height:70px;}
+/* 漂浮的氣球 */
+#balloon-item{top:60px;right:120px;width:35px;height:60px;}
+
+.dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#3a1820;letter-spacing:3px;font-family:'Special Elite',monospace;}
+
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(10,3,5,.95);z-index:100;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
+.ov.show{display:flex;}
+.modal{background:#1e0d10;border:1px solid #4a2528;border-radius:4px;padding:24px;max-width:420px;width:100%;position:relative;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:auto;}
+.modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #3a1820;color:#907075;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;}
+.modal-x:hover{border-color:#c89098;color:#e8c8cc;}
+.modal-chapter{font-size:9px;color:#705055;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.modal h3{font-size:14px;color:#e8c8cc;margin-bottom:14px;padding-right:80px;}
+.modal-story{font-size:12px;color:#907075;line-height:2.2;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #2a1215;}
+.modal-story em{color:#c89098;font-style:normal;}
+.puzzle-label{font-size:9px;color:#705055;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;}
+.pbox{background:#150608;border:1px solid #3a1820;border-radius:3px;padding:14px;margin:10px 0;}
+.pbox .eq{font-size:13px;color:#c89098;line-height:2.2;text-align:center;}
+.cipher-wrap{background:#150608;border:1px solid #3a1820;border-radius:3px;padding:12px;margin:10px 0;}
+.cipher-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px;}
+.cc{font-size:11px;padding:5px 4px;border-radius:2px;font-family:'Special Elite',monospace;text-align:center;}
+.cc.sym{color:#907075;background:#1a0a0d;border:1px solid #2a1215;}
+.cc.val{color:#e8c8cc;background:#1e1010;border:1px solid #3a1820;}
+.answer-area{margin-top:16px;padding-top:16px;border-top:1px solid #2a1215;}
+.answer-label{font-size:9px;color:#705055;margin-bottom:10px;letter-spacing:2px;font-family:'Special Elite',monospace;}
+.answer-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.ans-input{background:#150608;border:1px solid #3a1820;color:#e8c8cc;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:3px;text-align:center;outline:none;transition:border-color .2s;}
+.ans-input:focus{border-color:#c89098;}
+.ans-btn{background:transparent;border:1px solid #3a1820;color:#907075;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.ans-btn:hover{border-color:#c89098;color:#e8c8cc;}
+.ans-fb{font-size:11px;margin-left:6px;}
+.ans-fb.ok{color:#a89878;}.ans-fb.no{color:#a06070;}
+.collect-btn{background:transparent;border:1px solid #3a1820;color:#907075;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;margin-top:10px;width:100%;text-align:center;}
+.collect-btn:hover{border-color:#c89098;color:#e8c8cc;}
+.back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #2a1215;color:#4a2528;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
+.back-btn:hover{color:#907075;border-color:#4a2528;}
+.solved-notice{font-size:12px;color:#a89878;margin-top:10px;}
+
+/* 底部 */
+.bui{background:#150608;padding:22px 26px;border-top:1px solid #2a1215;}
+.chapter-tag{font-size:9px;color:#3a1820;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:10px;}
+.stext{font-size:13px;color:#907075;line-height:2.2;margin-bottom:18px;min-height:50px;}
+.stext em{color:#c89098;font-style:normal;}
+
+/* 兩個密碼輸入區 */
+.dual-input{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.input-group{display:flex;flex-direction:column;gap:6px;}
+.input-group label{font-size:9px;color:#705055;letter-spacing:2px;font-family:'Special Elite',monospace;}
+.slot-row{display:flex;gap:6px;}
+.slot{width:44px;height:44px;border:1px solid #3a1820;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#3a1820;background:#150608;font-family:'Special Elite',monospace;transition:all .4s;}
+.slot.filled{border-color:#c89098;color:#e8c8cc;background:#1e1010;}
+
+.final-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.cinput{background:#150608;border:1px solid #3a1820;color:#e8c8cc;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;}
+.cinput:focus{border-color:#c89098;}
+.sbtn{background:transparent;border:1px solid #3a1820;color:#907075;padding:10px 22px;font-size:12px;cursor:pointer;border-radius:2px;font-family:'Noto Serif TC',serif;transition:all .2s;}
+.sbtn:hover{border-color:#c89098;color:#e8c8cc;}
+.fb{font-size:11px;color:#4a2528;}
+.fb.ok{color:#a89878;}.fb.no{color:#a06070;}
+
+/* 解鎖後卡片區 */
+.unlock-section{display:none;margin-top:24px;padding-top:24px;border-top:1px solid #2a1215;}
+.unlock-section.show{display:block;}
+.unlock-story{font-size:13px;color:#907075;line-height:2.4;margin-bottom:24px;}
+.unlock-story em{color:#c89098;font-style:normal;}
+
+/* 生日卡片 */
+.birthday-card-wrap{background:linear-gradient(135deg,#1e0d10,#221015);border:1px solid #6a3540;border-radius:6px;padding:28px 24px;position:relative;overflow:hidden;}
+.birthday-card-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(220,120,140,.06),transparent 60%);pointer-events:none;}
+.card-tag{font-size:9px;color:#6a3540;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;text-align:center;}
+.card-to{font-size:13px;color:#c89098;margin-bottom:20px;font-style:italic;}
+.card-body{font-size:12px;color:#907075;line-height:2.4;margin-bottom:20px;}
+.card-body em{color:#c89098;font-style:normal;}
+.card-sign{font-size:11px;color:#6a3540;letter-spacing:1px;text-align:right;margin-top:20px;padding-top:16px;border-top:1px solid #2a1215;}
+.card-ending{font-size:13px;color:#c89098;text-align:center;margin-top:24px;line-height:2.4;font-style:italic;}
+
+@media(max-width:480px){
+  .modal{padding:16px;max-height:90vh;}
+  .scene{height:45vh;}
+  .slot{width:36px;height:36px;font-size:15px;}
+  .cinput{width:100px;font-size:16px;}
+  .ans-input{font-size:16px;}
+  .dual-input{gap:10px;}
+}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div style="position:fixed;inset:0;background:#000000;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;">
+    <div style="font-size:10px;color:#503035;letter-spacing:6px;font-family:'Special Elite',monospace;margin-bottom:48px;">MEMORY RECOLORIST</div>
+    <div style="font-size:11px;color:#806060;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;">第五章</div>
+    <div style="font-size:36px;color:#e8a0b0;letter-spacing:5px;margin-bottom:10px;font-family:'Noto Serif TC',serif;font-weight:700;">重聚</div>
+    <div style="font-size:12px;color:#705055;letter-spacing:3px;margin-bottom:48px;font-family:'Special Elite',monospace;">THE REUNION</div>
+    <div style="width:40px;height:1px;background:#2a1215;margin:0 auto 40px;"></div>
+    <div style="font-size:13px;color:#907075;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;">
+      你幾乎全部想起來了。<br><br>
+      那些年、那些人、那些說過和沒說過的話。<em>還差最後一步。</em><br><br>
+      今天，是一個特別的日子。你感覺到了。
+    </div>
+    <button onclick="startGame()" style="background:transparent;border:1px solid #4a2528;color:#907075;padding:12px 40px;font-size:11px;cursor:pointer;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;" onmouseover="this.style.borderColor='#c89098';this.style.color='#e8c8cc'" onmouseout="this.style.borderColor='#4a2528';this.style.color='#907075'">最後一步</button>
+    <div style="position:absolute;bottom:24px;font-size:9px;color:#2a1215;letter-spacing:3px;font-family:'Special Elite',monospace;">DAY 05 of 05 · FINAL</div>
+  </div>
+</div>
+
+<div class="gw" id="game">
+  <div class="scene">
+    <div class="scene-bg"></div>
+    <div class="memory-overlay"></div>
+    <div class="scene-ceil"></div>
+    <div class="scene-wall"></div>
+    <div class="scene-floor"></div>
+    <div class="pink-window"><div class="pw"></div><div class="pw"></div><div class="pw"></div><div class="pw"></div></div>
+
+    <!-- 飄散裝飾 -->
+    <div class="petal" style="top:20%;left:20%;animation-delay:0s;"></div>
+    <div class="petal" style="top:35%;left:45%;animation-delay:1.5s;"></div>
+    <div class="petal" style="top:25%;left:70%;animation-delay:3s;"></div>
+    <div class="petal" style="top:50%;left:30%;animation-delay:4.5s;"></div>
+
+    <div class="desk-final"><div class="dfleg l"></div><div class="dfleg r"></div></div>
+    <div class="dayhdr">DAY 05 · FINAL</div>
+
+    <!-- 密碼表A（牆上，符號對字母）-->
+    <div class="item" id="cipherA-item" onclick="openM('cipherA')">
+      <svg width="85" height="110" viewBox="0 0 85 110">
+        <rect x="0" y="0" width="85" height="110" rx="2" fill="#1a0a0d" stroke="#4a2528" stroke-width="1.5"/>
+        <rect x="3" y="3" width="79" height="12" rx="1" fill="#2a1215"/>
+        <text x="42" y="13" text-anchor="middle" font-size="7" fill="#c89098" font-family="monospace" letter-spacing="1">CIPHER · A</text>
+        <line x1="3" y1="18" x2="82" y2="18" stroke="#2a1215" stroke-width="1"/>
+        <text x="8" y="30" font-size="7" fill="#907075" font-family="monospace">✦ = J</text>
+        <text x="8" y="42" font-size="7" fill="#907075" font-family="monospace">◈ = U</text>
+        <text x="8" y="54" font-size="7" fill="#907075" font-family="monospace">⟡ = N</text>
+        <text x="8" y="66" font-size="7" fill="#907075" font-family="monospace">⌖ = E</text>
+        <text x="8" y="78" font-size="7" fill="#555" font-family="monospace">⊕ = A</text>
+        <text x="8" y="90" font-size="7" fill="#555" font-family="monospace">⋈ = B</text>
+        <text x="8" y="102" font-size="7" fill="#555" font-family="monospace">⌬ = C ···</text>
+      </svg>
+      <div class="ilabel">密碼表 A</div>
+    </div>
+
+    <!-- 加密信件（桌上）-->
+    <div class="item locked" id="letterA-item" onclick="openM('letterA')">
+      <svg width="60" height="75" viewBox="0 0 60 75">
+        <rect x="0" y="0" width="60" height="75" rx="2" fill="#1e0d10" stroke="#3a1820" stroke-width="1.5"/>
+        <rect x="4" y="8" width="52" height="2" fill="#2a1215"/>
+        <rect x="4" y="14" width="48" height="2" fill="#2a1215"/>
+        <text x="30" y="35" text-anchor="middle" font-size="11" fill="#4a2528" font-family="monospace" letter-spacing="2">✦◈⟡⌖</text>
+        <rect x="4" y="45" width="52" height="1" fill="#2a1215"/>
+        <rect x="4" y="52" width="40" height="1" fill="#2a1215"/>
+        <text x="30" y="68" text-anchor="middle" font-size="7" fill="#3a1820" font-family="monospace">sealed</text>
+      </svg>
+      <div class="lock-badge">🔒</div>
+      <div class="ilabel">加密信件（鎖定）</div>
+    </div>
+
+    <!-- 數字對照表B（牆上）-->
+    <div class="item" id="cipherB-item" onclick="openM('cipherB')">
+      <svg width="75" height="95" viewBox="0 0 75 95">
+        <rect x="0" y="0" width="75" height="95" rx="2" fill="#1a0a0d" stroke="#4a2528" stroke-width="1.5"/>
+        <rect x="3" y="3" width="69" height="12" rx="1" fill="#2a1215"/>
+        <text x="37" y="13" text-anchor="middle" font-size="7" fill="#c89098" font-family="monospace" letter-spacing="1">CIPHER · B</text>
+        <line x1="3" y1="18" x2="72" y2="18" stroke="#2a1215" stroke-width="1"/>
+        <text x="8" y="30" font-size="7" fill="#907075" font-family="monospace">20 = T</text>
+        <text x="8" y="42" font-size="7" fill="#907075" font-family="monospace">05 = E</text>
+        <text x="8" y="54" font-size="7" fill="#907075" font-family="monospace">14 = N</text>
+        <text x="8" y="66" font-size="7" fill="#555" font-family="monospace">01 = A</text>
+        <text x="8" y="78" font-size="7" fill="#555" font-family="monospace">02 = B</text>
+        <text x="8" y="90" font-size="7" fill="#555" font-family="monospace">03 = C ···</text>
+      </svg>
+      <div class="ilabel">密碼表 B</div>
+    </div>
+
+    <!-- 加密明信片（桌上，鎖定）-->
+    <div class="item locked" id="postcardB-item" onclick="openM('postcardB')">
+      <svg width="70" height="50" viewBox="0 0 70 50">
+        <rect x="0" y="0" width="70" height="50" rx="2" fill="#1e0d10" stroke="#3a1820" stroke-width="1.5"/>
+        <line x1="35" y1="0" x2="35" y2="50" stroke="#2a1215" stroke-width="1"/>
+        <rect x="38" y="5" width="25" height="16" rx="1" fill="#2a1215"/>
+        <text x="17" y="20" text-anchor="middle" font-size="8" fill="#4a2528" font-family="monospace">20-05-14</text>
+        <rect x="4" y="28" width="28" height="1" fill="#2a1215"/>
+        <rect x="4" y="34" width="24" height="1" fill="#2a1215"/>
+        <rect x="4" y="40" width="26" height="1" fill="#2a1215"/>
+      </svg>
+      <div class="lock-badge">🔒</div>
+      <div class="ilabel">加密明信片（鎖定）</div>
+    </div>
+
+    <!-- 蛋糕 -->
+    <div class="item" id="cake-item" onclick="openM('cake')">
+      <svg width="65" height="70" viewBox="0 0 65 70">
+        <!-- 蠟燭 -->
+        <rect x="29" y="5" width="7" height="20" rx="1" fill="#d4a0b0" stroke="#c89098" stroke-width="1"/>
+        <ellipse cx="32" cy="5" rx="4" ry="6" fill="#ffe0a0" opacity=".8"/>
+        <!-- 蛋糕 -->
+        <ellipse cx="32" cy="38" rx="28" ry="6" fill="#c87890"/>
+        <rect x="4" y="38" width="56" height="22" fill="#d4889a"/>
+        <ellipse cx="32" cy="60" rx="28" ry="6" fill="#c87890"/>
+        <!-- 裝飾 -->
+        <text x="32" y="53" text-anchor="middle" font-size="8" fill="#1e0d10" font-family="serif">生日快樂</text>
+      </svg>
+      <div class="ilabel">生日蛋糕</div>
+    </div>
+
+    <!-- 氣球 -->
+    <div class="item" id="balloon-item" onclick="openM('balloon')">
+      <svg width="35" height="60" viewBox="0 0 35 60">
+        <ellipse cx="17" cy="20" rx="14" ry="17" fill="#e890a8" stroke="#c87890" stroke-width="1"/>
+        <path d="M17,37 Q20,45 17,55" fill="none" stroke="#c87890" stroke-width="1.5"/>
+        <text x="17" y="22" text-anchor="middle" font-size="9" fill="#1e0d10" font-family="serif">✿</text>
+      </svg>
+      <div class="ilabel">氣球</div>
+    </div>
+
+    <div class="ov" id="ov"><div class="modal" id="mc"></div></div>
+  </div>
+
+  <div class="bui">
+    <div class="chapter-tag">CHAPTER 05 · 重聚</div>
+    <div class="stext" id="st">空間像記憶一樣，半透明的。你站在這裡，感覺到今天有什麼不一樣——光是粉的，空氣是暖的，有什麼東西快要出現了。</div>
+
+    <div class="dual-input">
+      <div class="input-group">
+        <label>謎底一</label>
+        <div class="slot-row">
+          <div class="slot" id="sA0">?</div>
+          <div class="slot" id="sA1">?</div>
+        </div>
+      </div>
+      <div class="input-group">
+        <label>謎底二</label>
+        <div class="slot-row">
+          <div class="slot" id="sB0">?</div>
+          <div class="slot" id="sB1">?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="final-row">
+      <input class="cinput" id="ci2" type="text" maxlength="4" placeholder="____"/>
+      <button class="sbtn" onclick="checkFinal()">解鎖記憶</button>
+      <span class="fb" id="fb"></span>
+    </div>
+
+    <div class="unlock-section" id="unlockSection">
+      <div class="unlock-story">
+        0610。<br><br>
+        <em>六月十日。</em><br><br>
+        你站在那裡，沉默了很久。<br><br>
+        那是今天。今天是你的生日。<br><br>
+        記憶像退去的霧，全部回來了——六年的臉，六年的聲音，六年裡說過和沒說過的話。還有那個人，一直在你旁邊的那個人。<br><br>
+        <em>她今天，有話要告訴你。</em>
+      </div>
+
+      <!-- 生日卡片 -->
+      <div class="birthday-card-wrap">
+        <div class="card-tag">— 給 林宥希 的信 —</div>
+        <div class="card-to">致 那個最特別的妳：</div>
+        <div class="card-body">
+          2020 年的七月底，我們坐在同一間教室裡，帶著國小的生澀與對未知的期待，安靜地入座。<br><br>
+          後來的我，成了教室裡最愛在上課出風頭的；而妳，在段考中一戰成名，爬上一個遙不可及的地位。不知道在什麼時候我們都成了老師的愛徒，在那個四分五裂的班級裡多了一點點不一樣的頭銜。<br><br>
+          在我眼中，妳始終是那個跟我存在極大差異、有距離感的「非等閒之輩」，當時的我們，我甚至還需要帶著一點點防備來溝通。<em>我壓根沒想過，在未來的某一天，我們會如此要好。</em><br><br>
+          高中分班名單出來的那天，我快速掃過名單發現妳的名字也排在我前面，我們又同班了。我依舊繼續當遊牧民族在各大圈圈裡走跳，居無定所。而妳，也依舊待在自己的小圈圈裡，讀著妳自己的書。<br><br>
+          直到一次換座位，妳恰好坐在我的前方。偶爾，妳會轉過來趴在我的鉛筆盒上睡覺讓我蠻多問號；偶爾，我聽著誰又喜歡妳、跟著亂嗑 CP 順便助攻。那時的我總以為，妳也只是那種待花期一過、時間一到，就會淡出生命的朋友。<br><br>
+          直到高一下第一次並肩而坐，我們聊了好多，內容我已模糊，但那種感覺我一直記得。<em>我只記得那時候我才發現妳是一個很細心的人，細心到連一句很不經意講出來的話妳都記得，甚至會很在意別人的眼光別人怎麼想怎麼看。</em>在那一刻，我試著卸下心防，試著對妳多一點信任，試著讓妳走進我的世界。<br><br>
+          更後來我們聊了更多更深層的東西，我才發現其實你並不是外人看到的堅強樂觀，相反的是那種明明受了一堆委屈卻選擇往肚子吞的乖寶寶，用委屈換取息事寧人的乖寶寶。我常跟我媽說我覺得我好像在帶壞林宥希，但我沒說的是，<em>看到妳在跟我一起調皮、一起「幹壞事」時露出的那種快樂，我覺得那才是妳最真實、最放鬆、最像人的時候。</em><br><br>
+          其實很多時候看到妳很累的臉，想要勸妳什麼卻又打消念頭，很多千言萬語就融合在簡單的一句話匆匆帶過。沒說的那些話讓我趁這個時候說完吧！<br><br>
+          很多時候我覺得我是一個不夠稱職的朋友，喜歡對妳生氣對妳耍賴，總是一直吵妳一直弄妳一直煩你，什麼事情都像巨嬰一樣吵著要妳陪我，而妳，雖然嘴上嫌棄，卻從來沒有真正把我推開，而是默默地在後頭幫我顧好一切。但背後沒說的其實是<em>我看著妳把自己逼得那麼緊，心疼妳為什麼累得半死卻還不肯放過自己；我氣妳總是習慣先照顧別人，卻永遠把自己排在最後面；我更氣妳明明很多事情在乎得要死，卻還要體面地裝作若無其事。</em><br><br>
+          有時候我真的很希望我可以用我的幼稚讓妳真的慢下來喘口氣，更希望在我面前妳可以什麼都不用偽裝的做自己，做那個看到食物就兩眼放光的平凡高中生。<br><br>
+          很巧的，妳的生日剛好卡在要畢業的時刻，謝謝妳讓我很無聊的高中三年充滿了樂趣，讓我在無數個爬不起來的夜晚有撐下去的念頭。或許我們都不能保證誰陪著誰可以走到多遠，又或者某一天走著走著就散了，<em>我都不會忘記在這段讀書很辛苦很累的時光中，有這麼一個角色陪我長大。</em><br><br>
+          雖然我們都沒有辦法保證以後的路會不會更苦更陡，沒辦法保證有一天我們會不會長成以前我們討厭的大人，對著世界充滿敵意，但我始終希望18歲的妳可以少一點內耗少一點焦慮，可以躺上床就睡得像一頭豬一樣。可以對自己好一點自私一點，偶爾耍耍廢、快快樂樂的，交到一大群新的朋友過著比現在更繽紛的生活，也希望17歲的你跟我說的那些煩惱通通消失不見。<br><br>
+          畢業後，請繼續陪我吵、陪我鬧。不管大學去哪裡、離我有幾公里，只要一通電話、一則訊息，誰愛了誰、誰欺負妳，<em>我都會是那個第一時間站在妳身後的人。哪怕是心情不好、哪怕是失戀，我都會一直在。</em>
+        </div>
+        <div class="card-sign">最後的最後，謝謝妳的出現。<br>生日快樂，畢業快樂。</div>
+        <div class="card-ending">
+          生日快樂。<br>
+          <span style="font-size:11px;color:#6a3540;letter-spacing:2px;">祝 分科測驗順利 &amp; 永遠開心</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const solved={cipherA:false,letterA:false,cipherB:false,postcardB:false,cake:false,balloon:false};
+
+const data={
+  cipherA:{
+    chapter:'密碼表 A',
+    title:'牆上的符號對照表',
+    story:'牆上釘著一張紙，紙張微微泛黃，像是放了很久的東西。\n\n上面是一張對照表，每個奇怪的符號對應一個英文字母。\n\n你不知道它用在哪裡，但你把它記下來了。',
+    extra:`<div class="cipher-wrap">
+<div style="font-size:9px;color:#705055;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">符號對照表 A</div>
+<div class="cipher-grid">
+<div class="cc sym">✦</div><div class="cc val">J</div>
+<div class="cc sym">◈</div><div class="cc val">U</div>
+<div class="cc sym">⟡</div><div class="cc val">N</div>
+<div class="cc sym">⌖</div><div class="cc val">E</div>
+<div class="cc sym">⊕</div><div class="cc val">A</div>
+<div class="cc sym">⋈</div><div class="cc val">B</div>
+<div class="cc sym">⌬</div><div class="cc val">C</div>
+<div class="cc sym">⟁</div><div class="cc val">D</div>
+</div>
+<div style="font-size:10px;color:#4a2528;margin-top:8px;">把這張表記起來，去找那封信。</div>
+</div>`,
+    answer:null, slots:[], 
+    found:'符號對照表記下來了。那封信，現在應該可以打開了。',
+    onSolve:()=>{
+      document.getElementById('letterA-item').classList.remove('locked');
+      document.querySelector('#letterA-item .ilabel').textContent='加密信件';
+      document.querySelector('#letterA-item .lock-badge').textContent='';
+      showToast('密碼表 A 記下了！那封信現在可以解讀了。');
+    }
+  },
+  letterA:{
+    chapter:'謎底一',
+    title:'加密信件',
+    story:'信封裡有一張紙，上面寫著四個符號：\n\n「✦◈⟡⌖」\n\n你看著這四個符號，想起了牆上的對照表。\n\n解出這個詞，它代表一個月份，把月份的數字填入謎底一。',
+    extra:`<div class="pbox"><div class="eq" style="font-size:24px;letter-spacing:6px;">✦ ◈ ⟡ ⌖</div><div style="font-size:11px;color:#705055;margin-top:10px;">用密碼表 A 翻譯，解出一個英文月份<br>把這個月份對應的數字（兩位數）填入謎底一</div></div>`,
+    answer:'06', slotsA:[0,1], inputLen:2, placeholder:'__',
+    found:'JUNE。六月。謎底一的數字，是 06。',
+    onSolve:null
+  },
+  cipherB:{
+    chapter:'密碼表 B',
+    title:'牆上的數字對照表',
+    story:'另一張紙，釘在旁邊。\n\n這次是數字對應英文字母。格式有點像電報密碼。\n\n你把它跟那張明信片放在一起想——應該有關係。',
+    extra:`<div class="cipher-wrap">
+<div style="font-size:9px;color:#705055;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;">數字對照表 B</div>
+<div class="cipher-grid">
+<div class="cc val">20</div><div class="cc sym">T</div>
+<div class="cc val">05</div><div class="cc sym">E</div>
+<div class="cc val">14</div><div class="cc sym">N</div>
+<div class="cc val">01</div><div class="cc sym">A</div>
+<div class="cc val">02</div><div class="cc sym">B</div>
+<div class="cc val">03</div><div class="cc sym">C</div>
+<div class="cc val">04</div><div class="cc sym">D</div>
+<div class="cc val">06</div><div class="cc sym">F</div>
+</div>
+<div style="font-size:10px;color:#4a2528;margin-top:8px;">把這張表記起來，去找那張明信片。</div>
+</div>`,
+    answer:null, slots:[],
+    found:'數字對照表記下來了。明信片現在應該可以解讀了。',
+    onSolve:()=>{
+      document.getElementById('postcardB-item').classList.remove('locked');
+      document.querySelector('#postcardB-item .ilabel').textContent='加密明信片';
+      document.querySelector('#postcardB-item .lock-badge').textContent='';
+      showToast('密碼表 B 記下了！那張明信片現在可以解讀了。');
+    }
+  },
+  postcardB:{
+    chapter:'謎底二',
+    title:'加密明信片',
+    story:'明信片上寫著三組數字：\n\n「20 - 05 - 14」\n\n你看著這三組數字，想起了牆上的另一張對照表。\n\n解出這個詞，它代表一個數字，把數字填入謎底二。',
+    extra:`<div class="pbox"><div class="eq" style="font-size:20px;letter-spacing:4px;">20 · 05 · 14</div><div style="font-size:11px;color:#705055;margin-top:10px;">用密碼表 B 翻譯，解出一個英文單字<br>這個單字本身就是一個數字，把它的阿拉伯數字填入謎底二</div></div>`,
+    answer:'10', slotsB:[0,1], inputLen:2, placeholder:'__',
+    found:'TEN。十。謎底二的數字，是 10。',
+    onSolve:null
+  },
+  cake:{
+    chapter:'背景',
+    title:'生日蛋糕',
+    story:'蛋糕放在桌上，奶油是粉色的，上面寫著「生日快樂」。\n\n蠟燭還沒點，火還沒燃起來。\n\n你站在那裡，感覺有一種說不清楚的暖。',
+    extra:null,
+    answer:null, slots:[],
+    found:'蠟燭還沒點。但沒關係，今天還沒結束。',
+    onSolve:null
+  },
+  balloon:{
+    chapter:'背景',
+    title:'飄著的氣球',
+    story:'氣球飄在空中，繩子繞在椅背上。\n\n上面畫著一朵小花，像是有人特意畫上去的，筆觸有點歪，但很用力。\n\n你想起來了——這種用力的感覺，你見過。',
+    extra:null,
+    answer:null, slots:[],
+    found:'氣球上的花，歪歪的，但很用力。你笑了一下。',
+    onSolve:null
+  }
+};
+
+function startGame(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('game').style.display='block';
+}
+
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e0d10;border:1px solid #c89098;color:#e8c8cc;padding:10px 20px;border-radius:4px;font-size:12px;z-index:999;font-family:Noto Serif TC,serif;text-align:center;max-width:280px;';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+
+function openM(type){
+  const el=document.getElementById(type+'-item');
+  if(el&&el.classList.contains('locked')){
+    document.getElementById('mc').innerHTML=`
+      <button class="modal-x" onclick="closeX()">← 回到這裡</button>
+      <h3 style="color:#e8c8cc;">這裡還打不開。</h3>
+      <div style="font-size:12px;color:#705055;line-height:2;padding:16px 0;border:1px dashed #3a1820;border-radius:3px;text-align:center;margin:10px 0;">需要先從其他地方找到線索。</div>
+      <button class="back-btn" onclick="closeX()">← 回到這裡</button>`;
+    document.getElementById('ov').classList.add('show');
+    return;
+  }
+  const d=data[type];
+  const done=solved[type];
+  const storyHtml=d.story.replace(/\n/g,'<br>');
+  let ansHtml='';
+  if(d.answer===null){
+    ansHtml=done?'<div class="solved-notice">✓ 已探索</div>':`<button class="collect-btn" onclick="collectNoAnswer('${type}')">記下這條線索</button>`;
+  }else if(done){
+    ansHtml='<div class="solved-notice">✓ 線索已記下</div>';
+  }else{
+    ansHtml=`<div class="answer-area"><div class="answer-label">輸入答案</div><div class="answer-row"><input class="ans-input" id="ans" type="text" maxlength="${d.inputLen}" placeholder="${d.placeholder}" style="width:${d.inputLen*38+28}px"/><button class="ans-btn" onclick="checkAns('${type}')">確認</button><span class="ans-fb" id="ans-fb"></span></div></div>`;
+  }
+  document.getElementById('mc').innerHTML=`
+    <button class="modal-x" onclick="closeX()">← 回到這裡</button>
+    <div class="modal-chapter">${d.chapter}</div>
+    <h3>${d.title}</h3>
+    <div class="modal-story">${storyHtml}</div>
+    ${d.extra?'<div class="puzzle-label">線索</div>'+d.extra:''}
+    ${ansHtml}
+    <button class="back-btn" onclick="closeX()">← 回到這裡</button>`;
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('st').innerHTML=d.story.replace(/\n/g,' ');
+  if(d.answer&&!done)setTimeout(()=>{const el=document.getElementById('ans');if(el)el.focus();},100);
+}
+
+function collectNoAnswer(type){
+  solved[type]=true;
+  const d=data[type];
+  if(d.onSolve)d.onSolve();
+  document.getElementById(type+'-item').classList.add('solved');
+  document.getElementById('st').innerHTML=d.found;
+  closeX();
+}
+
+function checkAns(type){
+  const d=data[type];
+  const val=document.getElementById('ans').value.trim();
+  const fb=document.getElementById('ans-fb');
+  if(val===d.answer){
+    fb.textContent='✓';fb.className='ans-fb ok';
+    setTimeout(()=>{
+      solved[type]=true;
+      if(d.onSolve)d.onSolve();
+      // 填入對應 slot
+      if(d.slotsA){
+        d.slotsA.forEach((i,idx)=>{
+          const s=document.getElementById('sA'+i);
+          s.textContent=d.answer[idx];
+          s.classList.add('filled');
+        });
+      }
+      if(d.slotsB){
+        d.slotsB.forEach((i,idx)=>{
+          const s=document.getElementById('sB'+i);
+          s.textContent=d.answer[idx];
+          s.classList.add('filled');
+        });
+      }
+      document.getElementById(type+'-item').classList.add('solved');
+      document.getElementById('st').innerHTML=d.found;
+      closeX();
+      // 自動填入最終密碼
+      const a0=document.getElementById('sA0').textContent;
+      const a1=document.getElementById('sA1').textContent;
+      const b0=document.getElementById('sB0').textContent;
+      const b1=document.getElementById('sB1').textContent;
+      if(a0!=='?'&&a1!=='?'&&b0!=='?'&&b1!=='?'){
+        document.getElementById('ci2').value=a0+a1+b0+b1;
+      }
+    },700);
+  }else{
+    fb.textContent='×';fb.className='ans-fb no';
+    document.getElementById('ans').value='';
+    document.getElementById('ans').focus();
+    setTimeout(()=>{fb.textContent='';fb.className='ans-fb';},2000);
+  }
+}
+
+function closeX(){document.getElementById('ov').classList.remove('show');}
+
+function checkFinal(){
+  const v=document.getElementById('ci2').value.trim();
+  const fb=document.getElementById('fb');
+  if(v==='0610'){
+    fb.textContent='✓';fb.className='fb ok';
+    document.getElementById('st').innerHTML='0610。六月十日。<em>今天是你的生日。</em>記憶全部回來了。';
+    document.getElementById('unlockSection').classList.add('show');
+  }else{
+    fb.textContent='×';fb.className='fb no';
+    setTimeout(()=>{fb.textContent='';fb.className='fb';},2000);
+  }
+}
+</script>
+</body>
+</html>
