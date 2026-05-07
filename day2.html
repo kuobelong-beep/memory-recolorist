@@ -44,52 +44,52 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 /* 物件通用 */
 .item{position:absolute;cursor:pointer;transition:filter .2s,transform .15s;}
 .item:hover{filter:brightness(2) drop-shadow(0 0 6px #888);transform:scale(1.06);}
-.item.solved{filter:brightness(.25) saturate(0);}
-.item.solved:hover{filter:brightness(.4);transform:scale(1.03);}
+.item.solved{filter:brightness(.6) saturate(.4);}
+.item.solved:hover{filter:brightness(.75) saturate(.5);transform:scale(1.03);}
 .ilabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#666;white-space:nowrap;background:rgba(0,0,0,.9);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s;pointer-events:none;}
 .item:hover .ilabel{opacity:1;}
 
 /* 公告欄 */
 #board-item{top:65px;left:80px;width:95px;height:125px;}
-.board{width:95px;height:125px;background:#1c1c1c;border:2px solid #2e2e2e;position:relative;padding:5px;}
-.board-pin{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:7px;height:7px;background:#333;border-radius:50%;}
+.board{width:95px;height:125px;background:#1a1a1a;border:3px solid #5a4a3a;box-shadow:0 0 12px rgba(180,140,80,.15),inset 0 0 8px rgba(0,0,0,.4);position:relative;padding:5px;}
+.board-pin{position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:8px;height:8px;background:#c8a060;border-radius:50%;box-shadow:0 0 4px rgba(200,160,80,.5);}
 .board-header{height:14px;background:#222;border-bottom:1px solid #2a2a2a;margin-bottom:4px;display:flex;align-items:center;padding:0 3px;}
 .board-header span{font-size:6px;color:#444;letter-spacing:1px;}
-.board-paper{background:#222;border:1px solid #2a2a2a;padding:5px;height:88px;position:relative;}
+.board-paper{background:#1e1e1e;border:1px solid #3a3a3a;box-shadow:inset 0 0 6px rgba(0,0,0,.3);padding:5px;height:88px;position:relative;}
 .board-line{height:1px;background:#2e2e2e;margin-bottom:4px;}
 .board-text{font-size:7px;color:#444;margin-top:5px;line-height:1.7;font-family:'Special Elite',monospace;}
 
 /* 置物櫃 */
 #locker-item{top:65px;right:80px;width:78px;height:135px;}
-.locker{width:78px;height:135px;background:#181818;border:2px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:3px;}
-.lu{background:#1e1e1e;border:1px solid #252525;position:relative;}
-.lu::after{content:'';position:absolute;right:4px;top:50%;transform:translateY(-50%);width:4px;height:4px;border-radius:50%;background:#333;}
+.locker{width:78px;height:135px;background:#161616;border:2px solid #3a4a5a;box-shadow:0 0 10px rgba(80,120,180,.1),2px 2px 0 rgba(255,255,255,.03);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:3px;}
+.lu{background:#1c1c1c;border:1px solid #2a3a4a;position:relative;}
+.lu::after{content:'';position:absolute;right:5px;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;background:#4a6a8a;box-shadow:0 0 4px rgba(80,120,180,.4);}
 .lu-num{position:absolute;top:3px;left:4px;font-size:6px;color:#333;font-family:'Special Elite',monospace;}
 .lu-note{position:absolute;bottom:4px;left:3px;right:3px;font-size:5px;color:#3a3a3a;font-family:'Special Elite',monospace;line-height:1.4;}
 
 /* 化學實驗室門 */
 #chemlab-item{bottom:115px;left:120px;width:62px;height:112px;}
-.door{width:62px;height:112px;background:#181818;border:2px solid #2a2a2a;border-radius:2px 2px 0 0;position:relative;}
-.door-win{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:34px;height:24px;background:#1c1c1c;border:1px solid #2e2e2e;}
-.door-sign{position:absolute;top:42px;left:50%;transform:translateX(-50%);width:48px;background:#1e1e1e;border:1px solid #2a2a2a;padding:3px;text-align:center;}
+.door{width:62px;height:112px;background:#141414;border:3px solid #2a3a4a;box-shadow:0 0 15px rgba(60,100,160,.12),inset 0 0 10px rgba(0,0,0,.5);border-radius:2px 2px 0 0;position:relative;}
+.door-win{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:34px;height:24px;background:#0a1520;border:1px solid #3a5a7a;box-shadow:0 0 8px rgba(60,120,200,.15);}
+.door-sign{position:absolute;top:42px;left:50%;transform:translateX(-50%);width:48px;background:#0d1a28;border:1px solid #2a4a6a;padding:3px;text-align:center;}
 .door-sign-text{font-size:5px;color:#3a3a3a;display:block;line-height:1.6;letter-spacing:.5px;}
 .door-code{font-size:7px;color:#555;letter-spacing:1px;font-family:'Special Elite',monospace;}
-.door-knob{position:absolute;right:4px;top:55%;width:8px;height:8px;background:#252525;border-radius:50%;border:1px solid #333;}
+.door-knob{position:absolute;right:5px;top:55%;width:9px;height:9px;background:#3a5a7a;border-radius:50%;border:1px solid #5a8aaa;box-shadow:0 0 6px rgba(80,140,200,.3);}
 
 /* 掃把間 */
 #broom-item{bottom:115px;right:120px;width:52px;height:96px;}
-.broom-door{width:52px;height:96px;background:#161616;border:2px solid #252525;border-radius:1px 1px 0 0;position:relative;}
-.broom-sign{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:40px;background:#1c1c1c;border:1px solid #252525;padding:4px 2px;text-align:center;}
+.broom-door{width:52px;height:96px;background:#121212;border:2px solid #2a3020;box-shadow:0 0 8px rgba(0,0,0,.4),inset 1px 0 0 rgba(255,255,255,.02);border-radius:1px 1px 0 0;position:relative;}
+.broom-sign{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:40px;background:#161c10;border:1px solid #2a3820;padding:4px 2px;text-align:center;}
 .broom-text{font-size:5px;color:#333;display:block;line-height:1.6;}
 .broom-binary{font-size:7px;color:#444;letter-spacing:.5px;font-family:'Special Elite',monospace;}
-.broom-knob{position:absolute;left:5px;top:50%;width:7px;height:7px;background:#222;border-radius:50%;border:1px solid #2e2e2e;}
+.broom-knob{position:absolute;left:5px;top:50%;width:7px;height:7px;background:#3a3020;border-radius:50%;border:1px solid #5a5040;box-shadow:0 0 3px rgba(0,0,0,.5);}
 
 .dayhdr{position:absolute;top:10px;right:14px;z-index:5;font-size:9px;color:#333;letter-spacing:3px;font-family:'Special Elite',monospace;}
 
 /* Modal */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
 .ov.show{display:flex;}
-.modal{background:#181818;border:1px solid #333;border-radius:4px;padding:26px;max-width:420px;width:100%;position:relative;max-height:88vh;overflow-y:auto;}
+.modal{background:#181818;border:1px solid #333;border-radius:4px;padding:20px;max-width:420px;width:100%;position:relative;max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:auto;}
 .modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #2a2a2a;color:#555;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
 .modal-x:hover{border-color:#555;color:#aaa;}
 .modal-chapter{font-size:9px;color:#444;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
@@ -142,7 +142,7 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .unlock-next p{font-size:10px;color:#444;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;}
 .unlock-link{font-size:13px;color:#7a9aaa;font-family:'Special Elite',monospace;word-break:break-all;cursor:pointer;transition:color .2s;}
 .unlock-link:hover{color:#aaccdd;}
-</style>
+@media(max-width:480px){.modal{padding:14px;max-height:90vh;}.scene{height:45vh;}.slot{width:38px;height:38px;font-size:16px;}.cinput{width:100px;font-size:16px;}.ans-input{font-size:16px;}}</style>
 </head>
 <body>
 
@@ -248,10 +248,33 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
     </div>
     <div class="unlock-section" id="unlockSection">
       <div class="unlock-story" id="unlockStory"></div>
-      <div class="unlock-next">
-        <p>第三章入口</p>
-        <div class="unlock-link" onclick="window.location.href='https://kuobelong-beep.github.io/memory-recolorist/day3.html'">
-          → https://kuobelong-beep.github.io/memory-recolorist/day3.html
+
+      <div id="memoryCards" style="display:none;margin-top:24px;">
+        <div style="font-size:9px;color:#2a5a7a;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:16px;text-align:center;">— 關於那個人，你想起了一些細節 —</div>
+        <div style="background:#0c1628;border:1px solid #1e3a5a;border-radius:4px;padding:16px;margin-bottom:10px;">
+          <div style="font-size:9px;color:#2a5a7a;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;">習慣</div>
+          <div style="font-size:12px;color:#7aaac8;line-height:1.9;">她的橡皮擦用到只剩一角，旁邊放著一塊新的，但她從來不換。你問過她為什麼，她說「用習慣了」。你沒有再問。</div>
+        </div>
+        <div style="background:#0c1628;border:1px solid #1e3a5a;border-radius:4px;padding:16px;margin-bottom:10px;">
+          <div style="font-size:9px;color:#2a5a7a;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;">日常</div>
+          <div style="font-size:12px;color:#7aaac8;line-height:1.9;">她可以連續好幾天吃一樣的東西，不覺得膩。你覺得這很奇怪，但後來發現，她只是不想把心思花在不重要的事情上。</div>
+        </div>
+        <div style="background:#0c1628;border:1px solid #1e3a5a;border-radius:4px;padding:16px;margin-bottom:10px;">
+          <div style="font-size:9px;color:#2a5a7a;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;">情緒</div>
+          <div style="font-size:12px;color:#7aaac8;line-height:1.9;">她情緒來的時候，你幾乎看不出來。她把什麼都往裡面壓，壓到某一天突然全部倒出來——你只能靜靜地在旁邊，等她說完。</div>
+        </div>
+        <div style="background:#0c1628;border:1px solid #1e3a5a;border-radius:4px;padding:16px;margin-bottom:10px;">
+          <div style="font-size:9px;color:#2a5a7a;letter-spacing:2px;font-family:'Special Elite',monospace;margin-bottom:8px;">看穿</div>
+          <div style="font-size:12px;color:#7aaac8;line-height:1.9;">她看起來很堅強。但你知道，她比任何人都更需要有人在。</div>
+        </div>
+
+        <div style="margin-top:28px;padding-top:22px;border-top:1px solid #1a3a5a;text-align:center;">
+          <div style="font-size:13px;color:#5a8aaa;line-height:2.8;font-family:'Noto Serif TC',serif;font-style:italic;">
+            4月20日。你把這個日期記下來，但還不知道它屬於誰。<br>
+            <span style="color:#7aaac8;">只是有一種感覺——</span><br>
+            <span style="color:#9abfdf;">那個人，你認識。比你以為的還要久。</span><br><br>
+            <span style="font-size:11px;color:#3a6a8a;letter-spacing:2px;font-style:normal;font-family:'Special Elite',monospace;">走廊的燈還亮著。前面還有路。</span>
+          </div>
         </div>
       </div>
     </div>
@@ -390,6 +413,7 @@ function checkFinal(){
     document.getElementById('st').innerHTML=`4月20日。<em>你不知道那是誰的生日，但你記得那個數字，像是某個地方的鑰匙。</em>走廊盡頭的燈，亮了一點點。`;
     document.getElementById('unlockStory').innerHTML=`四個數字排在一起，拼出一個你說不清楚的日期。<br><br>你站在走廊裡，聽著自己的呼吸聲。有什麼東西正在回來——不急，但很確定。<br><br><em>前面還有路。繼續走。</em>`;
     document.getElementById('unlockSection').classList.add('show');
+    document.getElementById('memoryCards').style.display='block';
   }else{
     fb.textContent='×';
     fb.className='fb no';
