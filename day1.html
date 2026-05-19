@@ -12,18 +12,18 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 #intro{position:fixed;inset:0;background:#0a0a0a;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;}
 .intro-tag{font-size:10px;color:#424242;letter-spacing:5px;font-family:'Special Elite',monospace;margin-bottom:50px;}
 .intro-chapter{font-size:11px;color:#555;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:20px;}
-.intro-title{font-size:28px;color:#eeeeeedddcccbbb;letter-spacing:4px;margin-bottom:6px;font-family:'Special Elite',monospace;}
+.intro-title{font-size:28px;color:#ffffff;letter-spacing:4px;margin-bottom:6px;font-family:'Special Elite',monospace;}
 .intro-sub{font-size:12px;color:#555;letter-spacing:2px;margin-bottom:50px;font-family:'Special Elite',monospace;}
 .intro-divider{width:40px;height:1px;background:#363636;margin:0 auto 40px;}
 .intro-body{font-size:13px;color:#555;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;}
 .intro-body em{color:#8a8a8a;font-style:normal;}
 .name-section{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:32px;}
 .name-label{font-size:10px;color:#555;letter-spacing:3px;}
-.name-input{background:transparent;border:none;border-bottom:1px solid #424242;color:#eeeeeedddccc;font-size:18px;padding:8px 4px;width:200px;text-align:center;font-family:'Noto Serif TC',serif;letter-spacing:2px;outline:none;transition:border-color .3s;}
+.name-input{background:transparent;border:none;border-bottom:1px solid #424242;color:#ffffff;font-size:18px;padding:8px 4px;width:200px;text-align:center;font-family:'Noto Serif TC',serif;letter-spacing:2px;outline:none;transition:border-color .3s;}
 .name-input:focus{border-color:#7a7a7a;}
 .name-input::placeholder{color:#363636;font-size:14px;}
 .start-btn{background:transparent;border:1px solid #424242;color:#7a7a7a;padding:12px 40px;font-size:11px;cursor:pointer;border-radius:1px;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;}
-.start-btn:hover{border-color:#7a7a7a;color:#eeeeeedddcccbbb;}
+.start-btn:hover{border-color:#7a7a7a;color:#ffffff;}
 .intro-footer{position:absolute;bottom:24px;font-size:9px;color:#363636;letter-spacing:3px;font-family:'Special Elite',monospace;}
 #game{display:none;}
 .scene{position:relative;width:100%;height:55vh;min-height:340px;background:#484848;overflow:hidden;filter:grayscale(1) contrast(1.1);}
@@ -65,27 +65,27 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .ov.show{display:flex;}
 .modal{background:#484848;border:1px solid #424242;border-radius:4px;padding:20px;max-width:420px;width:100%;position:relative;max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .modal-x{position:absolute;top:14px;right:14px;background:transparent;border:1px solid #363636;color:#555;font-size:11px;cursor:pointer;padding:5px 12px;border-radius:2px;transition:all .2s;font-family:'Special Elite',monospace;letter-spacing:1px;}
-.modal-x:hover{border-color:#555;color:#eeeeeedddcccbbb;}
+.modal-x:hover{border-color:#555;color:#ffffff;}
 .modal-chapter{font-size:9px;color:#555;letter-spacing:3px;margin-bottom:10px;font-family:'Special Elite',monospace;}
-.modal h3{font-size:14px;color:#eeeeeeddd;margin-bottom:14px;padding-right:80px;letter-spacing:.5px;line-height:1.6;}
+.modal h3{font-size:14px;color:#ffffff;margin-bottom:14px;padding-right:80px;letter-spacing:.5px;line-height:1.6;}
 .modal-story{font-size:12px;color:#7a7a7a;line-height:2.2;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #2e2e2e;}
 .modal-story em{color:#9a9a9a;font-style:normal;}
 .puzzle-label{font-size:9px;color:#555;letter-spacing:2px;margin-bottom:10px;font-family:'Special Elite',monospace;}
 .puzzle-box{background:#1c1c1c;border:1px solid #363636;border-radius:3px;padding:14px;margin:10px 0;}
-.puzzle-box .eq{font-size:14px;color:#eeeeeedddcccbbb;line-height:2;text-align:center;}
+.puzzle-box .eq{font-size:14px;color:#ffffff;line-height:2;text-align:center;}
 .morse-display{background:#1c1c1c;border:1px solid #363636;border-radius:3px;padding:14px;font-family:'Special Elite',monospace;font-size:20px;color:#9a9a9a;letter-spacing:8px;margin:10px 0;text-align:center;}
 .table-wrap{background:#1c1c1c;border:1px solid #363636;border-radius:3px;padding:12px;margin:10px 0;}
 .sym-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px;}
 .tcell{font-size:12px;padding:5px 4px;border-radius:2px;font-family:'Special Elite',monospace;text-align:center;}
 .tcell.sym{color:#8a8a8a;background:#202020;border:1px solid #323232;}
-.tcell.num{color:#eeeeeedddcccbbb;background:#282828;border:1px solid #363636;}
+.tcell.num{color:#ffffff;background:#282828;border:1px solid #363636;}
 .answer-area{margin-top:16px;padding-top:16px;border-top:1px solid #282828;}
 .answer-label{font-size:9px;color:#555;margin-bottom:10px;letter-spacing:2px;font-family:'Special Elite',monospace;}
 .answer-row{display:flex;gap:8px;align-items:center;}
-.ans-input{background:#1c1c1c;border:1px solid #363636;color:#eeeeeeddd;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s;}
+.ans-input{background:#1c1c1c;border:1px solid #363636;color:#ffffff;font-size:18px;padding:8px 12px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s;}
 .ans-input:focus{border-color:#555;}
 .ans-btn{background:transparent;border:1px solid #424242;color:#8a8a8a;padding:8px 16px;cursor:pointer;border-radius:2px;font-size:12px;font-family:'Noto Serif TC',serif;transition:all .2s;}
-.ans-btn:hover{border-color:#7a7a7a;color:#eeeeeedddccc;}
+.ans-btn:hover{border-color:#7a7a7a;color:#ffffff;}
 .ans-fb{font-size:11px;margin-left:6px;}
 .ans-fb.ok{color:#6a9;}.ans-fb.no{color:#a66;}
 .back-btn{display:block;margin-top:14px;background:transparent;border:1px solid #2e2e2e;color:#555;padding:8px 14px;cursor:pointer;border-radius:2px;font-size:11px;font-family:'Special Elite',monospace;letter-spacing:2px;transition:all .2s;width:100%;text-align:center;}
@@ -98,12 +98,12 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 .prow{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
 .slots{display:flex;gap:8px;}
 .slot{width:44px;height:44px;border:1px solid #363636;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#424242;background:#1c1c1c;font-family:'Special Elite',monospace;transition:all .4s;}
-.slot.filled{border-color:#7a7a7a;color:#eeeeeeddd;background:#282828;}
+.slot.filled{border-color:#7a7a7a;color:#ffffff;background:#282828;}
 .irow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-.cinput{background:#1c1c1c;border:1px solid #363636;color:#eeeeeeddd;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;}
+.cinput{background:#1c1c1c;border:1px solid #363636;color:#ffffff;font-size:18px;padding:9px 12px;width:120px;border-radius:3px;font-family:'Special Elite',monospace;letter-spacing:8px;text-align:center;outline:none;transition:border-color .2s;}
 .cinput:focus{border-color:#555;}
 .sbtn{background:transparent;border:1px solid #424242;color:#8a8a8a;padding:10px 22px;font-size:12px;cursor:pointer;border-radius:2px;font-family:'Noto Serif TC',serif;transition:all .2s;}
-.sbtn:hover{border-color:#7a7a7a;color:#eeeeeedddccc;}
+.sbtn:hover{border-color:#7a7a7a;color:#ffffff;}
 .fb{font-size:11px;color:#555;}
 .fb.ok{color:#6a9;}.fb.no{color:#a66;}
 .unlock-section{display:none;margin-top:22px;padding-top:22px;border-top:1px solid #282828;}
@@ -134,22 +134,22 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
 <body>
 <div id="intro">
   <div style="position:fixed;inset:0;background:#000000;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;">
-    <div style="font-size:10px;color:#4a4a4a;letter-spacing:6px;font-family:'Special Elite',monospace;margin-bottom:48px;">MEMORY RECOLORIST</div>
-    <div style="font-size:11px;color:#686868;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;">第一章</div>
-    <div style="font-size:36px;color:#cccccc;letter-spacing:5px;margin-bottom:10px;font-family:'Noto Serif TC',serif;font-weight:700;">單色荒原</div>
-    <div style="font-size:12px;color:#5a5a5a;letter-spacing:3px;margin-bottom:48px;font-family:'Special Elite',monospace;">THE MONOCHROME WASTELAND</div>
+    <div style="font-size:10px;color:#606060;letter-spacing:6px;font-family:'Special Elite',monospace;margin-bottom:48px;">MEMORY RECOLORIST</div>
+    <div style="font-size:11px;color:#808080;letter-spacing:3px;font-family:'Special Elite',monospace;margin-bottom:18px;">第一章</div>
+    <div style="font-size:36px;color:#d8d8d8;letter-spacing:5px;margin-bottom:10px;font-family:'Noto Serif TC',serif;font-weight:700;">單色荒原</div>
+    <div style="font-size:12px;color:#686868;letter-spacing:3px;margin-bottom:48px;font-family:'Special Elite',monospace;">THE MONOCHROME WASTELAND</div>
     <div style="width:40px;height:1px;background:#2a2a2a;margin:0 auto 40px;"></div>
-    <div style="font-size:13px;color:#848484;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;">
+    <div style="font-size:13px;color:#969696;line-height:2.4;margin-bottom:50px;max-width:360px;text-align:left;">
       你醒來的時候，房間裡沒有顏色。<br><br>
-      四面牆壁掛滿了空白的考卷，像是某種無聲的審判。桌上有一支筆、一疊講義，還有你看不懂的筆記。<span style="color:#aaaaaa;">你不記得自己是誰。</span><br><br>
+      四面牆壁掛滿了空白的考卷，像是某種無聲的審判。桌上有一支筆、一疊講義，還有你看不懂的筆記。<span style="color:#c0c0c0;">你不記得自己是誰。</span><br><br>
       但有個聲音，遠遠的，像是有人留下了什麼，在等你找。
     </div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:32px;">
-      <div style="font-size:10px;color:#505050;letter-spacing:3px;">你叫什麼名字</div>
-      <input id="nameInput" type="text" placeholder="在此輸入" maxlength="10" style="background:transparent;border:none;border-bottom:1px solid #3a3a3a;color:#cccccc;font-size:18px;padding:8px 4px;width:200px;text-align:center;font-family:'Noto Serif TC',serif;letter-spacing:2px;outline:none;"/>
+      <div style="font-size:10px;color:#686868;letter-spacing:3px;">你叫什麼名字</div>
+      <input id="nameInput" type="text" placeholder="在此輸入" maxlength="10" style="background:transparent;border:none;border-bottom:1px solid #484848;color:#d8d8d8;font-size:18px;padding:8px 4px;width:200px;text-align:center;font-family:'Noto Serif TC',serif;letter-spacing:2px;outline:none;"/>
     </div>
-    <button onclick="startGame()" style="background:transparent;border:1px solid #3a3a3a;color:#787878;padding:12px 40px;font-size:11px;cursor:pointer;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;" onmouseover="this.style.borderColor='#888';this.style.color='#bbb'" onmouseout="this.style.borderColor='#3a3a3a';this.style.color='#787878'">踏進那扇門</button>
-    <div style="position:absolute;bottom:24px;font-size:9px;color:#2a2a2a;letter-spacing:3px;font-family:'Special Elite',monospace;">DAY 01 of 05</div>
+    <button onclick="startGame()" style="background:transparent;border:1px solid #484848;color:#909090;padding:12px 40px;font-size:11px;cursor:pointer;font-family:'Special Elite',monospace;letter-spacing:4px;transition:all .3s;" onmouseover="this.style.borderColor='#aaa';this.style.color='#ccc'" onmouseout="this.style.borderColor='#484848';this.style.color='#909090'">踏進那扇門</button>
+    <div style="position:absolute;bottom:24px;font-size:9px;color:#383838;letter-spacing:3px;font-family:'Special Elite',monospace;">DAY 01 of 05</div>
   </div>
 </div>
 
@@ -206,7 +206,7 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
         <text x="33" y="55" text-anchor="middle" font-size="8" fill="#555" font-family="serif">∫ ?</text>
         <circle cx="48" cy="66" r="6" fill="none" stroke="#424242" stroke-width="1"/>
       </svg>
-      <div class="ilabel">微積分課本</div>
+      <div class="ilabel">沾著墨汁的課本</div>
     </div>
 
     <div class="item" id="letter-item" onclick="openM('letter')">
@@ -258,12 +258,12 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
           <div class="tmi-card">
             <div class="tmi-icon">🍜</div>
             <div class="tmi-label">FAVORITE FOOD</div>
-            <div class="tmi-val">麵類<br><em>「勞碌命」是一間麵店的名字，但我們都覺得跟你本人很像。</em></div>
+            <div class="tmi-val">麵類<br><em>「勞碌命」是一間麵店的名字，但我們都覺得說的就是你本人。</em></div>
           </div>
           <div class="tmi-card">
             <div class="tmi-icon">🏠</div>
             <div class="tmi-label">FAVORITE ACTIVITY</div>
-            <div class="tmi-val">宅在家追劇</div>
+            <div class="tmi-val">宅在家追劇、大部分的時間都很累需要睡眠</div>
           </div>
           <div class="tmi-card">
             <div class="tmi-icon">🦋</div>
@@ -278,22 +278,22 @@ body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify
           <div class="tmi-card">
             <div class="tmi-icon">💬</div>
             <div class="tmi-label">CATCHPHRASE</div>
-            <div class="tmi-val"><em>「蛤?!」</em><br><em>「WTF」</em></div>
+            <div class="tmi-val"><em>「蛤?!」不管有沒有聽到先「蛤」就對了</em><br><em>「WTF!」包含各種情緒的助詞</em></div>
           </div>
           <div class="tmi-card">
             <div class="tmi-icon">😤</div>
             <div class="tmi-label">STRESS MODE</div>
-            <div class="tmi-val">「我好躁喔！好焦慮！」<br><em>需要有人靜靜地待著陪。</em></div>
+            <div class="tmi-val">「我好躁喔！我好焦慮！」<br><em>可以不用說什麼但需要有人靜靜地待著陪。</em></div>
           </div>
           <div class="tmi-card full">
             <div class="tmi-icon">😂</div>
             <div class="tmi-label">HIDDEN FEATURE</div>
-            <div class="tmi-val">會突然起笑，然後在外面發瘋。<em>本人至今不承認這很中二。</em></div>
+            <div class="tmi-val">會突然起笑，然後在外面發瘋。<em>本人不曾承認過。</em></div>
           </div>
         </div>
         <div class="birthday-card">
-          <p>生日快樂。<br>今天不用記公式，不用背課文。<br><em>只需要記得——你身邊有一群很愛你的人。</em></p>
-          <div class="birthday-sign">繼續尋找失去的記憶 &amp; 拼湊記憶</div>
+          <p>要快樂。<br>今天不用記公式，不用背課文。<br><em>只需要記得——你身邊有一群很愛你的人。</em></p>
+          <div class="birthday-sign">祝 分科測驗順利 &amp; 永遠開心</div>
         </div>
       </div>
     </div>
